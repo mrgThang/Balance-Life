@@ -8,12 +8,18 @@ Tạo branch các nhân, resolve conflict trước khi merge vào main branch
 
 ### Resolve conflict trước khi merge vào main
 ```git checkout main```
+
 ```git pull origin main```
+
 ```git checkout <BRANCH-NAME>```
+
 ```git merge main```
+
 resolve your conflict
+
 ```git checkout main```
-```git merge <BRANCH-NAME>
+
+```git merge <BRANCH-NAME>```
 
 ## Project folder structure
 
