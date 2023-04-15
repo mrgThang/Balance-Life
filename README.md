@@ -1,6 +1,19 @@
-# app
+# Balance Life
 
-Balance Life
+## Lưu ý
+Tạo branch các nhân, resolve conflict trước khi merge vào main branch
+
+### Tạo branch cá nhân
+```git checkout -b <BRANCH-NAME>```
+
+### Resolve conflict trước khi merge vào main
+```git checkout main```
+```git pull origin main```
+```git checkout <BRANCH-NAME>
+```git merge main```
+resolve your conflict
+```git checkout main```
+```git merge <BRANCH-NAME>
 
 ## Project folder structure
 
