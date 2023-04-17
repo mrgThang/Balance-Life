@@ -1,30 +1,35 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:app/screens/home_page.dart';
 import 'package:app/screens/plan_page.dart';
-import 'package:app/screens/camera_page.dart';
+import 'package:app/screens/create_screens/camera_page.dart';
 import 'package:app/screens/chat_page.dart';
 import 'package:app/screens/profile_page.dart';
 
 
 class ControlPage extends StatefulWidget {
-  const ControlPage({super.key});
+  const ControlPage({super.key, required this.camera});
+
+  final CameraDescription camera;
 
   @override
   State<ControlPage> createState() => _ControlPage();
 }
 
-final List<Widget> _children = [
-  const HomePage(),
-  const PlanPage(),
-  const CameraPage(),
-  const ChatPage(),
-  const ProfilePage(),
-];
-
 class _ControlPage extends State<ControlPage> {
 
   int _currentIndex = 0;
+
+  late List<Widget> _children;
+
+  final List<Widget> _currentTitle = [
+    const Text('Home Page'),
+    const Text('Plan Page'),
+    const Text('Camera Page'),
+    const Text('Chat Page'),
+    const Text('Profile Page'),
+  ];
 
   final List<Icon> _lightIcon = [
     const Icon(IconlyLight.home),
@@ -51,6 +56,14 @@ class _ControlPage extends State<ControlPage> {
   ];
 
   void onTabTapped(int index) {
+    if (index == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => CameraPage(camera: widget.camera),
+        ),
+      );
+      return;
+    }
     setState(() {
       _currentIcon[_currentIndex] = _lightIcon[_currentIndex];
       _currentIndex = index;
@@ -59,13 +72,27 @@ class _ControlPage extends State<ControlPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _children = [
+      HomePage(),
+      PlanPage(),
+      CameraPage(camera: widget.camera),
+      ChatPage(),
+      ProfilePage(),
+    ];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: _currentTitle[_currentIndex],
       ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
