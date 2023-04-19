@@ -39,6 +39,7 @@ dependencies:
   camera: ^0.10.4
   path_provider: ^2.0.14
   image_cropper: ^3.0.2
+  http: ^0.13.3
   path:
 
 dev_dependencies:
@@ -47,6 +48,7 @@ dev_dependencies:
   path_provider: ^2.0.14
   image_cropper: ^3.0.2
   path:
+  http: ^0.13.3
   flutter_test:
     sdk: flutter
 

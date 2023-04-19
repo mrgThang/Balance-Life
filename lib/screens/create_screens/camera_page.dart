@@ -17,6 +17,7 @@ class CameraPage extends StatefulWidget {
 class _CameraPage extends State<CameraPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  late bool _cameraOn;
 
   Widget cameraWidget(context) {
     var camera = _controller.value;
@@ -59,6 +60,8 @@ class _CameraPage extends State<CameraPage> {
 
     // Init controller
     _initializeControllerFuture = _controller.initialize();
+
+    _cameraOn = true;
   }
 
   @override
@@ -71,12 +74,12 @@ class _CameraPage extends State<CameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: const Color(0x55000000),
+        backgroundColor: const Color(0x55000000),
       ),
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.done && _cameraOn) {
             return cameraWidget(context);
           } else {
             return const Center(child: CircularProgressIndicator());
@@ -115,15 +118,32 @@ class _CameraPage extends State<CameraPage> {
                         await _initializeControllerFuture;
                         final image = await _controller.takePicture();
                         if (!mounted) return;
-                        String? imagePath = await _cropImage(imageFilePath: image.path);
+                        String? imagePath =
+                            await _cropImage(imageFilePath: image.path);
                         if (imagePath != null) {
+                          setState(() {
+                            _cameraOn = false;
+                            _controller.dispose();
+                          });
                           await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CreateFoodPage(
-                              imagePath: imagePath,
+                            MaterialPageRoute(
+                              builder: (context) => CreateFoodPage(
+                                imagePath: imagePath,
+                              ),
                             ),
-                          ),
-                        );
+                          ).then((value) {
+                            setState(() {
+                              _cameraOn = true;
+                              // Init camera controller
+                              _controller = CameraController(
+                                widget.camera,
+                                ResolutionPreset.high,
+                              );
+
+                              // Init controller
+                              _initializeControllerFuture = _controller.initialize();
+                            });
+                          });
                         }
                       } catch (e) {
                         print(e);

@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           // primarySwatch: MaterialColor(APP_COLORS.GRAY, color),
           primarySwatch: Colors.blue,

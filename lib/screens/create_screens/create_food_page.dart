@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:app/utils/constants.dart';
 import 'package:iconly/iconly.dart';
 
+import 'package:app/screens/create_screens/edit_ingredients_page.dart';
+
 class CreateFoodPage extends StatefulWidget {
   const CreateFoodPage({super.key, required this.imagePath});
 
@@ -59,8 +61,14 @@ class _CreateFoodPage extends State<CreateFoodPage> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                      ElevatedButton(
-                        onPressed: null,
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditIngredientsPage(foodName: nameController.text,)),
+                          );
+                        },
                         style: ButtonStyle(
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -71,7 +79,7 @@ class _CreateFoodPage extends State<CreateFoodPage> {
                               (states) => const Color(APP_COLORS.GREEN)),
                         ),
                         child: const Padding(
-                          padding: EdgeInsets.all(15.0),
+                          padding: EdgeInsets.all(10.0),
                           child: Text(
                             'Edit Ingredients',
                             style: TextStyle(
