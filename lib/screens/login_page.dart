@@ -1,11 +1,13 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import 'control_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
+  const LoginPage({super.key, required this.title, required this.camera});
 
   final String title;
+  final CameraDescription camera;
 
   @override
   State<LoginPage> createState() => _LoginPage();
@@ -69,7 +71,7 @@ class _LoginPage extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ControlPage()),
+                              builder: (context) => ControlPage(camera: widget.camera)),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
