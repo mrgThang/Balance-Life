@@ -7,19 +7,19 @@ Tạo branch các nhân, resolve conflict trước khi merge vào main branch
 ```git checkout -b <BRANCH-NAME>```
 
 ### Resolve conflict trước khi merge vào main
-```git checkout main```
+1. ```git checkout main```
 
-```git pull origin main```
+2. ```git pull origin main```
 
-```git checkout <BRANCH-NAME>```
+3. ```git checkout <YOUR-BRANCH-NAME>```
 
-```git merge main```
+4. ```git merge main```
 
-resolve your conflict
+5. resolve your conflict
 
-```git checkout main```
+6. ```git push origin <YOUR-BRANCH-NAME>```
 
-```git merge <BRANCH-NAME>```
+7. Tạo pull request và merge vào main
 
 ## Project folder structure
 
