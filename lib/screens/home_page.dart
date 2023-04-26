@@ -1,8 +1,11 @@
+import 'package:app/screens/control_page.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final CameraDescription camera;
+  const HomePage({super.key, required this.camera});
 
   @override
   State<HomePage> createState() => _HomePage();
@@ -161,9 +164,9 @@ class _HomePage extends State<HomePage> {
                 ),
               ),
             ),
-            const Plan(linkImage: "https://reviewed-com-res.cloudinary.com/image/fetch/s---oGP6J6d--/b_white,c_fill,cs_srgb,f_auto,fl_progressive.strip_profile,g_auto,h_729,q_auto,w_972/https://reviewed-production.s3.amazonaws.com/1568123038734/Bfast.png", label: "Breakfast", x: 0.8, y: 0.9),
-            const Plan(linkImage: "https://img.vietcetera.com/wp-content/uploads/2017/07/Local-Lunch-Featured.jpg", label: "Lunch", x: -0.5, y: 0.9),
-            const Plan(linkImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeml6HU53NPLRy_90C9RRb9-O0gBEQnYB5OA&usqp=CAU", label: "Dinner", x: 0.8, y: 0.9),
+            Plan(linkImage: "https://reviewed-com-res.cloudinary.com/image/fetch/s---oGP6J6d--/b_white,c_fill,cs_srgb,f_auto,fl_progressive.strip_profile,g_auto,h_729,q_auto,w_972/https://reviewed-production.s3.amazonaws.com/1568123038734/Bfast.png", label: "Breakfast", x: 0.8, y: 0.9, camera: widget.camera),
+            Plan(linkImage: "https://img.vietcetera.com/wp-content/uploads/2017/07/Local-Lunch-Featured.jpg", label: "Lunch", x: -0.5, y: 0.9, camera: widget.camera),
+            Plan(linkImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeml6HU53NPLRy_90C9RRb9-O0gBEQnYB5OA&usqp=CAU", label: "Dinner", x: 0.8, y: 0.9, camera: widget.camera),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -206,6 +209,7 @@ class _HomePage extends State<HomePage> {
 }
 
 class Plan extends StatelessWidget {
+  final CameraDescription camera;
   final String linkImage;
   final String label;
   final double x;
@@ -216,12 +220,24 @@ class Plan extends StatelessWidget {
     required this.label,
     required this.x,
     required this.y,
+    required this.camera,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {}, // navigate here
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ControlPage(
+              plan: label,
+              camera: camera,
+              i: 1,
+            ),
+          ),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
         child: Stack(
@@ -298,7 +314,6 @@ class CircleNutrition extends StatelessWidget {
               strokeWidth: 10,
               backgroundColor: color2,
               valueColor: AlwaysStoppedAnimation<Color>(color1),
-              // value: double.parse(a) / double.parse(b),
               value: a / b,
             ),
           ),

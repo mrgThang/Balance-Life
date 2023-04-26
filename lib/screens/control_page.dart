@@ -9,9 +9,11 @@ import 'package:app/screens/profile_page.dart';
 
 
 class ControlPage extends StatefulWidget {
-  const ControlPage({super.key, required this.camera});
+  const ControlPage({super.key, required this.camera, this.plan, this.i});
 
   final CameraDescription camera;
+  final String? plan;
+  final int? i;
 
   @override
   State<ControlPage> createState() => _ControlPage();
@@ -74,9 +76,14 @@ class _ControlPage extends State<ControlPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.i != null) {
+      _currentIcon[_currentIndex] = _lightIcon[_currentIndex];
+      _currentIndex = widget.i!;
+      _currentIcon[_currentIndex] = _boldIcon[_currentIndex];
+    }
     _children = [
-      HomePage(),
-      PlanPage(),
+      HomePage(camera: widget.camera),
+      PlanPage(label: widget.plan),
       CameraPage(camera: widget.camera),
       ChatPage(),
       ProfilePage(),
