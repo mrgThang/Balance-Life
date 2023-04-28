@@ -4,8 +4,9 @@ import 'package:iconly/iconly.dart';
 import 'package:app/screens/home_page.dart';
 import 'package:app/screens/plan_page.dart';
 import 'package:app/screens/create_screens/camera_page.dart';
-import 'package:app/screens/chat_page.dart';
 import 'package:app/screens/profile_page.dart';
+
+import 'chat_screens/chat_home_page.dart';
 
 
 class ControlPage extends StatefulWidget {
@@ -85,7 +86,7 @@ class _ControlPage extends State<ControlPage> {
       HomePage(camera: widget.camera),
       PlanPage(label: widget.plan),
       CameraPage(camera: widget.camera),
-      ChatPage(),
+      ChatHomePage(),
       ProfilePage(),
     ];
   }
