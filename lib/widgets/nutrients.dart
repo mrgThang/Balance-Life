@@ -5,19 +5,33 @@ import '../utils/constants.dart';
 class Nutrients {
   late final String name;
   late final double value;
+  late final String renderValue;
   late final double rda;
   late final int progressColor;
+  late final double adjustFraction;
 
-  Nutrients(String name, double value, double rda) {
+  Nutrients(String name, double value, double rda, adjustFraction) {
     this.name = name;
     this.value = value != null ? value : 0;
     this.rda = rda != null ? rda : 1;
-    if(value / rda * 100 < 1) {
+    this.adjustFraction = adjustFraction;
+
+    if((value * adjustFraction) / rda * 10000 < 100) {
       this.progressColor = APP_COLORS.BLUE_PROGRESS_BAR;
-    } else if (value / rda * 100 < 2) {
+    } else if ((value * adjustFraction) / rda * 10000 < 200) {
       this.progressColor = APP_COLORS.GREEN_PROGRESS_BAR;
     } else {
       this.progressColor = APP_COLORS.RED_PROGRESS_BAR;
+    }
+
+    if(value * adjustFraction * 100 >= 1000000000) {
+      this.renderValue = (value * adjustFraction * 100 / 1000000000).toStringAsFixed(1) + 'kg';
+    } else if(value * adjustFraction * 100 >= 1000000) {
+      this.renderValue = (value * adjustFraction * 100 / 1000000).toStringAsFixed(1) + 'g';
+    } else if (value * adjustFraction * 100 >= 1000) {
+      this.renderValue = (value * adjustFraction * 100 / 1000).toStringAsFixed(1) + 'mg';
+    } else {
+      this.renderValue = (value * adjustFraction * 100).toStringAsFixed(1) + 'ug';
     }
   }
 
@@ -44,8 +58,7 @@ class Nutrients {
           0,
           MediaQuery.of(context).size.height * 0.004,
         ),
-        child:
-            Text(textAlign: TextAlign.right, '${value.toStringAsFixed(0)} g'));
+        child: Text(textAlign: TextAlign.right, this.renderValue));
   }
 
   Widget buildProgress(BuildContext context) {
@@ -58,7 +71,7 @@ class Nutrients {
       ),
       child: Text(
         textAlign: TextAlign.right,
-        '${(value / rda * 10000).toStringAsFixed(0)}%',
+        '${((value * adjustFraction) / rda * 10000).toStringAsFixed(0)}%',
         style: TextStyle(color: Colors.grey.shade500),
       ),
     );
@@ -71,7 +84,7 @@ class Nutrients {
         minHeight: 5,
         backgroundColor: Colors.grey.shade200,
         color: Color(this.progressColor),
-        value: (value / rda * 10000).toInt().toDouble() / 100,
+        value: ((value * adjustFraction) / rda * 10000).toInt().toDouble() / 100,
       ),
     );
   }

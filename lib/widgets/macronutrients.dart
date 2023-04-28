@@ -6,18 +6,20 @@ class Macronutrients extends StatelessWidget{
   final String name;
   final double value;
   final String tail;
+  final double adjustFaction;
 
-  Macronutrients({super.key, required this.name, required this.value, required this.tail});
+  Macronutrients({super.key, required this.name, required this.value,
+    required this.tail, required this.adjustFaction});
 
   String format() {
     if (tail == "cal") {
-      double new_value = value * 100;
+      double new_value = value * 100 * adjustFaction;
       if (new_value.toStringAsFixed(1) == "${new_value.toStringAsFixed(0)}.0") {
         return "${new_value.toStringAsFixed(0)}k${tail}";
       }
       return "${new_value.toStringAsFixed(1)}k${tail}";
     } else {
-      double new_value = value / 10;
+      double new_value = value / 10 * adjustFaction;
       if (new_value >= 1000) {
         new_value = new_value / 1000;
         if (new_value.toStringAsFixed(1) == "${new_value.toStringAsFixed(0)}.0") {
