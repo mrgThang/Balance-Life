@@ -7,6 +7,11 @@ class APP_COLORS {
   static const int GREEN_PROGRESS_BAR = 0xff52c41a;
   static const int RED_PROGRESS_BAR = 0xfff5222d;
   static const int BLUE_NUTRIENTS_NAME = 0xff5db1ff;
+
+  static const int SEARCH_BAR_THEME = 0xfff4f4f4;
+  static const int SEARCH_BAR_TEXT = 0xff999999;
+
+  static const int GREEN_BOTTOM_BAR = 0xffeff7ee;
 }
 
 const INGREDIENTS_DATA = [
