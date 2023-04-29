@@ -167,31 +167,6 @@ class _HomePage extends State<HomePage> {
             Plan(linkImage: "https://reviewed-com-res.cloudinary.com/image/fetch/s---oGP6J6d--/b_white,c_fill,cs_srgb,f_auto,fl_progressive.strip_profile,g_auto,h_729,q_auto,w_972/https://reviewed-production.s3.amazonaws.com/1568123038734/Bfast.png", label: "Breakfast", x: 0.8, y: 0.9, camera: widget.camera),
             Plan(linkImage: "https://img.vietcetera.com/wp-content/uploads/2017/07/Local-Lunch-Featured.jpg", label: "Lunch", x: -0.5, y: 0.9, camera: widget.camera),
             Plan(linkImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeml6HU53NPLRy_90C9RRb9-O0gBEQnYB5OA&usqp=CAU", label: "Dinner", x: 0.8, y: 0.9, camera: widget.camera),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                  icon: const Icon(IconlyBold.home, size: 40, color: Color(0xff91c788)),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(IconlyLight.calendar, size: 40, color: Color(0xff9b9b9b)),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(IconlyBold.camera, size: 40, color: Color(0xff91c788)),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(IconlyLight.chat,size: 40, color: Color(0xff9b9b9b)),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(IconlyLight.profile, size: 40, color: Color(0xff9b9b9b)),
-                  onPressed: () {},
-                ),
-              ],
-            ),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

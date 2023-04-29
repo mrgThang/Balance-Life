@@ -4,9 +4,9 @@ import 'package:iconly/iconly.dart';
 import 'package:app/screens/home_page.dart';
 import 'package:app/screens/plan_page.dart';
 import 'package:app/screens/create_screens/camera_page.dart';
-import 'package:app/screens/chat_page.dart';
 import 'package:app/screens/profile_page.dart';
 
+import 'chat_screens/chat_home_page.dart';
 
 class ControlPage extends StatefulWidget {
   const ControlPage({super.key, required this.camera, this.plan, this.i});
@@ -20,7 +20,6 @@ class ControlPage extends StatefulWidget {
 }
 
 class _ControlPage extends State<ControlPage> {
-
   int _currentIndex = 0;
 
   late List<Widget> _children;
@@ -81,11 +80,26 @@ class _ControlPage extends State<ControlPage> {
       _currentIndex = widget.i!;
       _currentIcon[_currentIndex] = _boldIcon[_currentIndex];
     }
+    final ThemeData theme = ThemeData(
+      fontFamily: "SF Pro Text",
+    );
     _children = [
       HomePage(camera: widget.camera),
       PlanPage(label: widget.plan),
       CameraPage(camera: widget.camera),
-      ChatPage(),
+      MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
+            tertiary: Color(0xFFA5D19E),
+            secondary: Color(0xFFFFF7ED),
+            onSurface: Color(0xFF999999),
+            primary: Color(0xFF91C789),
+          ),
+        ),
+        home: ChatHomePage(),
+      ),
       ProfilePage(),
     ];
   }
