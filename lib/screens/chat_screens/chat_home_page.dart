@@ -36,40 +36,37 @@ class _ChatHomePageState extends State<ChatHomePage> {
   @override
   void initState() {
     super.initState();
-    login().then((value) {
-      getUserList().then((value) {
-        connectWebSocket().then((value) {
-          channel.sink.add(jsonEncode({
-            "command": "get_all_chatrooms",
-          }));
-          channel.sink.add(jsonEncode({
-            "command": "get_all_friends",
-          }));
-          channel.stream.listen((event) {
-            print(event);
-            var jsonRes = jsonDecode(event);
-            if (jsonRes['command'] == 'get_all_chatrooms') {
-              chatRooms = json_to_chatrooms(jsonRes['chatrooms']);
-              setState(() {});
-            }
-            if (jsonRes['command'] == 'reload_chatroom_by_id') {
-              var chatroom = json_to_chatroom(jsonRes['chatroom']);
-              var contains = false;
-              for (int i = 0; i < chatRooms.length; i++) {
-                if (chatRooms[i].id == chatroom.id!) {
-                  chatRooms[i] = chatroom;
-                  contains = true;
-                }
-              }
-              if (!contains) {
-                chatRooms.add(chatroom);
-              }
-              setState(() {});
-            }
-          });
+
+    connectWebSocket().then((value) {
+      channel.sink.add(jsonEncode({
+        "command": "get_all_chatrooms",
+      }));
+      channel.sink.add(jsonEncode({
+        "command": "get_all_friends",
+      }));
+      channel.stream.listen((event) {
+        print(event);
+        var jsonRes = jsonDecode(event);
+        if (jsonRes['command'] == 'get_all_chatrooms') {
+          chatRooms = json_to_chatrooms(jsonRes['chatrooms']);
           setState(() {});
-        });
+        }
+        if (jsonRes['command'] == 'reload_chatroom_by_id') {
+          var chatroom = json_to_chatroom(jsonRes['chatroom']);
+          var contains = false;
+          for (int i = 0; i < chatRooms.length; i++) {
+            if (chatRooms[i].id == chatroom.id!) {
+              chatRooms[i] = chatroom;
+              contains = true;
+            }
+          }
+          if (!contains) {
+            chatRooms.add(chatroom);
+          }
+          setState(() {});
+        }
       });
+      setState(() {});
     });
   }
 
@@ -78,26 +75,6 @@ class _ChatHomePageState extends State<ChatHomePage> {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
-          iconSize: 30.0,
-          color: mColorScheme.icon,
-          onPressed: () {},
-        ),
-        title: Text(
-          "Chats",
-          style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
-            color: mColorScheme.primary,
-          ),
-        ),
-        elevation: 0.0,
-        actions: <Widget>[],
-      ),
       body: Column(
         children: [
           Expanded(

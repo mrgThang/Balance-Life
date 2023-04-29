@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import '../models/user_model.dart';
 import 'control_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -68,11 +69,25 @@ class _LoginPage extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ControlPage(camera: widget.camera)),
-                        );
+                        var body = {
+                          "email": emailController.text.toString(),
+                          "password": passwordController.text.toString()
+                        };
+                        try {
+                          login(body: body).then((value) {
+                            getUserList().then((value) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ControlPage(camera: widget.camera)),
+                              );
+                            });
+                          });
+                        } catch (e) {
+                          // No specified type, handles all
+                          print('Something really unknown: $e');
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Please fill input')),

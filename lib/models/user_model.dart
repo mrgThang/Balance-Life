@@ -65,13 +65,11 @@ Future<List<User>> getUserList() async {
   return userList;
 }
 
-Future<User> login() async {
+Future<User> login({required body}) async {
+  print(body);
   var res = await sendPostRequest(
     endpoint: "accounts/login/",
-    body: {
-      "email": "thangg@gmail.com",
-      "password": "1"
-    },
+    body: body,
   );
   print("DEBUG");
   print(res);
