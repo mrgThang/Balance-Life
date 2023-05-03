@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class Nutrients {
-  late final String name;
-  late final double value;
-  late final String renderValue;
-  late final double rda;
-  late final int progressColor;
-  late final double adjustFraction;
+  String name = "";
+  double value = 0.0;
+  String renderValue = "";
+  double rda = 0.0;
+  int progressColor = 0;
+  double adjustFraction = 0.0;
 
-  Nutrients(String name, double value, double rda, adjustFraction) {
+  Nutrients(String name, double value, double rda, double adjustFraction) {
     this.name = name;
     this.value = value != null ? value : 0;
     this.rda = rda != null ? rda : 1;
+    setAdjustFraction(adjustFraction);
+  }
+
+  void setAdjustFraction(double adjustFraction) {
     this.adjustFraction = adjustFraction;
 
     if((value * adjustFraction) / rda * 10000 < 100) {

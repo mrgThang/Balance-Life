@@ -46,6 +46,7 @@ dependencies:
   emoji_picker_flutter: ^1.5.4
   image_picker: ^0.8.6
   cached_network_image: ^3.2.3
+  fluttertoast: ^8.2.1
 
 dev_dependencies:
   iconly: ^1.0.1
@@ -59,6 +60,7 @@ dev_dependencies:
   emoji_picker_flutter: ^1.5.4
   image_picker: ^0.8.6
   cached_network_image: ^3.2.3
+  fluttertoast: ^8.2.1
   flutter_test:
     sdk: flutter
 
