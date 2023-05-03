@@ -9,118 +9,140 @@ import '../../utils/constants.dart';
 import '../../widgets/macronutrients.dart';
 
 class ConfigValuePage extends StatefulWidget {
-  ConfigValuePage(
-      {super.key, required this.ingredientName, required this.ingredientData, required this.ingredientList});
+  ConfigValuePage({
+    super.key,
+    this.ingredientData = Null,
+    required this.ingredientList,
+    required this.indexIngredientList,
+    required this.isNew,
+  });
 
-  final String ingredientName;
   final ingredientData;
-  List<Ingredient> ingredientList;
-
+  final List<Ingredient> ingredientList;
+  final int indexIngredientList;
+  final bool isNew;
 
   @override
   State<ConfigValuePage> createState() => _ConfigValuePage();
 }
 
 class _ConfigValuePage extends State<ConfigValuePage> {
-  late List _macronutrient = <Macronutrients>[];
-  late List _vitamins = <Nutrients>[];
-  late List _minerals = <Nutrients>[];
-  late List _aminioAcids = <Nutrients>[];
-  late List _fattyAcids = <Nutrients>[];
-  late int _serving;
-  late double _adjustFraction;
-  late Timer timer;
+  late int _currentServing;
+  late Timer _timer;
+  late Ingredient _currentIngredient;
 
-  void _configValue() {
-    List name = ["Calories", "Proteins", "Fat", "Carbohydrates"];
-    List tail = ["cal", "g", "g", "g"];
+  void _configNewValue() {
+    String name = widget.ingredientData["ingredient_name"];
+    int serving = widget.ingredientData["serving"];
+    double adjustFraction = 1.0;
 
-    _macronutrient = <Macronutrients>[];
-    _vitamins = <Nutrients>[];
-    _minerals = <Nutrients>[];
-    _aminioAcids = <Nutrients>[];
-    _fattyAcids = <Nutrients>[];
+    List macronutrientName = ["Calories", "Proteins", "Fat", "Carbohydrates"];
+    List macronutrientTail = ["cal", "g", "g", "g"];
+
+    List macronutrient = <Macronutrients>[];
+    List vitamins = <Nutrients>[];
+    List minerals = <Nutrients>[];
+    List aminioAcids = <Nutrients>[];
+    List fattyAcids = <Nutrients>[];
 
     for (int i = 0; i < 4; ++i) {
-      _macronutrient.add(Macronutrients(
-          name: name[i],
-          value: widget.ingredientData[name[i].toString().toLowerCase()],
-          tail: tail[i],
-          adjustFaction: _adjustFraction,
-        )
-      );
+      macronutrient.add(Macronutrients(
+        macronutrientName[i],
+        widget.ingredientData[macronutrientName[i].toString().toLowerCase()],
+        macronutrientTail[i],
+        adjustFraction,
+      ));
     }
     for (int i = 0; i < VITAMIN_NAMES.length; ++i) {
       var nutrientData = widget.ingredientData["nutrient_set"];
-      _vitamins.add(nutrientData[VITAMIN_NAMES[i]] != null
+      vitamins.add(nutrientData[VITAMIN_NAMES[i]] != null
           ? Nutrients(
-        VITAMIN_NAMES[i],
-        nutrientData[VITAMIN_NAMES[i]]["ammount"],
-        nutrientData[VITAMIN_NAMES[i]]["rda"],
-        _adjustFraction,
-      )
+              VITAMIN_NAMES[i],
+              nutrientData[VITAMIN_NAMES[i]]["ammount"],
+              nutrientData[VITAMIN_NAMES[i]]["rda"],
+              adjustFraction,
+            )
           : Nutrients(
-        VITAMIN_NAMES[i],
-        0,
-        1,
-        _adjustFraction,
-      ));
+              VITAMIN_NAMES[i],
+              0,
+              1,
+              adjustFraction,
+            ));
     }
     for (int i = 0; i < MINERAL_NAMES.length; ++i) {
       var nutrientData = widget.ingredientData["nutrient_set"];
-      _minerals.add(nutrientData[MINERAL_NAMES[i]] != null
+      minerals.add(nutrientData[MINERAL_NAMES[i]] != null
           ? Nutrients(
-        MINERAL_NAMES[i],
-        nutrientData[MINERAL_NAMES[i]]["ammount"],
-        nutrientData[MINERAL_NAMES[i]]["rda"],
-        _adjustFraction,
-      )
+              MINERAL_NAMES[i],
+              nutrientData[MINERAL_NAMES[i]]["ammount"],
+              nutrientData[MINERAL_NAMES[i]]["rda"],
+              adjustFraction,
+            )
           : Nutrients(
-        MINERAL_NAMES[i],
-        0,
-        1,
-        _adjustFraction,
-      ));
+              MINERAL_NAMES[i],
+              0,
+              1,
+              adjustFraction,
+            ));
     }
     for (int i = 0; i < AMINO_ACIDS_NAMES.length; ++i) {
       var nutrientData = widget.ingredientData["nutrient_set"];
-      _aminioAcids.add(nutrientData[AMINO_ACIDS_NAMES[i]] != null
+      aminioAcids.add(nutrientData[AMINO_ACIDS_NAMES[i]] != null
           ? Nutrients(
-        AMINO_ACIDS_NAMES[i],
-        nutrientData[AMINO_ACIDS_NAMES[i]]["ammount"],
-        nutrientData[AMINO_ACIDS_NAMES[i]]["rda"],
-        _adjustFraction,
-      )
+              AMINO_ACIDS_NAMES[i],
+              nutrientData[AMINO_ACIDS_NAMES[i]]["ammount"],
+              nutrientData[AMINO_ACIDS_NAMES[i]]["rda"],
+              adjustFraction,
+            )
           : Nutrients(
-        AMINO_ACIDS_NAMES[i],
-        0,
-        1,
-        _adjustFraction,
-      ));
+              AMINO_ACIDS_NAMES[i],
+              0,
+              1,
+              adjustFraction,
+            ));
     }
     for (int i = 0; i < FATTY_ACIDS_NAMES.length; ++i) {
       var nutrientData = widget.ingredientData["nutrient_set"];
-      _fattyAcids.add(nutrientData[FATTY_ACIDS_NAMES[i]] != null
+      fattyAcids.add(nutrientData[FATTY_ACIDS_NAMES[i]] != null
           ? Nutrients(
-        FATTY_ACIDS_NAMES[i],
-        nutrientData[FATTY_ACIDS_NAMES[i]]["ammount"],
-        nutrientData[FATTY_ACIDS_NAMES[i]]["rda"],
-        _adjustFraction,
-      )
+              FATTY_ACIDS_NAMES[i],
+              nutrientData[FATTY_ACIDS_NAMES[i]]["ammount"],
+              nutrientData[FATTY_ACIDS_NAMES[i]]["rda"],
+              adjustFraction,
+            )
           : Nutrients(
-        FATTY_ACIDS_NAMES[i],
-        0,
-        1,
-        _adjustFraction,
-      ));
+              FATTY_ACIDS_NAMES[i],
+              0,
+              1,
+              adjustFraction,
+            ));
     }
+
+    _currentIngredient = Ingredient(
+        name: name,
+        serving: serving,
+        currentServing: serving,
+        macronutrient: macronutrient,
+        vitamins: vitamins,
+        minerals: minerals,
+        aminioAcids: aminioAcids,
+        fattyAcids: fattyAcids,
+        adjustFraction: adjustFraction);
+    _currentServing = serving;
+  }
+
+  void _configOldValue() {
+    _currentIngredient = widget.ingredientList[widget.indexIngredientList];
+    _currentServing = _currentIngredient.currentServing;
   }
 
   @override
   void initState() {
-    _serving = widget.ingredientData["serving"];
-    _adjustFraction = 1.0;
-    _configValue();
+    if (widget.isNew) {
+      _configNewValue();
+    } else {
+      _configOldValue();
+    }
     super.initState();
   }
 
@@ -128,7 +150,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.ingredientName,
+        title: Text(_currentIngredient.name,
             style: const TextStyle(
               color: Colors.black,
             )),
@@ -141,18 +163,12 @@ class _ConfigValuePage extends State<ConfigValuePage> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              widget.ingredientList.add(
-                new Ingredient(
-                  name: widget.ingredientName,
-                  serving: widget.ingredientData["serving"],
-                  macronutrient: _macronutrient,
-                  vitamins: _vitamins,
-                  minerals: _minerals,
-                  aminioAcids: _aminioAcids,
-                  fattyAcids: _fattyAcids,
-                  adjustFraction: _adjustFraction,
-                )
-              );
+              if (widget.isNew) {
+                widget.ingredientList.add(_currentIngredient);
+              } else {
+                widget.ingredientList[widget.indexIngredientList] =
+                    _currentIngredient;
+              }
               Navigator.of(context).pop(widget.ingredientList);
             },
             style: TextButton.styleFrom(
@@ -170,7 +186,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
             ),
             Center(
               child: Text(
-                "${widget.ingredientName}'s nutrient",
+                "${_currentIngredient.name}'s nutrient",
                 style: TextStyle(
                   color: Color(APP_COLORS.GREEN),
                   fontSize: 20,
@@ -180,26 +196,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Container(
-              color: Color(APP_COLORS.LIGHT_PINK),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  0,
-                  MediaQuery.of(context).size.height * 0.03,
-                  0,
-                  MediaQuery.of(context).size.height * 0.03,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _macronutrient[0],
-                    _macronutrient[1],
-                    _macronutrient[2],
-                    _macronutrient[3]
-                  ],
-                ),
-              ),
-            ),
+            MacroNutrientsGroup(list: _currentIngredient.macronutrient),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
@@ -216,7 +213,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
-            NutrientsGroup(list: _vitamins),
+            NutrientsGroup(list: _currentIngredient.vitamins),
             Center(
               child: Text(
                 "Minerals",
@@ -230,7 +227,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
-            NutrientsGroup(list: _minerals),
+            NutrientsGroup(list: _currentIngredient.minerals),
             Center(
               child: Text(
                 "Essential Amino Acids",
@@ -244,7 +241,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
-            NutrientsGroup(list: _aminioAcids),
+            NutrientsGroup(list: _currentIngredient.aminioAcids),
             Center(
               child: Text(
                 "Essential Fatty Acids",
@@ -258,7 +255,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.01,
             ),
-            NutrientsGroup(list: _fattyAcids),
+            NutrientsGroup(list: _currentIngredient.fattyAcids),
           ],
         ),
       ),
@@ -275,7 +272,9 @@ class _ConfigValuePage extends State<ConfigValuePage> {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.grey, blurRadius: 20, offset: Offset(10, -1))
+                      color: Colors.grey,
+                      blurRadius: 20,
+                      offset: Offset(10, -1))
                 ],
               ),
               child: BottomAppBar(
@@ -285,22 +284,24 @@ class _ConfigValuePage extends State<ConfigValuePage> {
                   children: [
                     GestureDetector(
                       onTapDown: (TapDownDetails detail) {
-                        timer = Timer.periodic(Duration(milliseconds: 100), (t) {
+                        _timer =
+                            Timer.periodic(Duration(milliseconds: 100), (t) {
                           setState(() {
-                            _serving -= 10;
-                            _adjustFraction = _serving / widget.ingredientData["serving"];
-                            _configValue();
+                            _currentServing -= 10;
+                            _currentIngredient.setAdjustFraction(
+                                _currentServing,
+                                _currentServing / _currentIngredient.serving);
                           });
                         });
                       },
                       onTapUp: (TapUpDetails detail) {
-                        timer.cancel();
+                        _timer.cancel();
                       },
                       onTap: () {
                         setState(() {
-                          _serving -= 10;
-                          _adjustFraction = _serving / widget.ingredientData["serving"];
-                          _configValue();
+                          _currentServing -= 10;
+                          _currentIngredient.setAdjustFraction(_currentServing,
+                              _currentServing / _currentIngredient.serving);
                         });
                       },
                       child: Icon(
@@ -322,7 +323,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                         child: Text(
-                          _serving.toString(),
+                          _currentServing.toString(),
                           style: TextStyle(
                             fontSize: 20,
                           ),
@@ -343,22 +344,24 @@ class _ConfigValuePage extends State<ConfigValuePage> {
                     ),
                     GestureDetector(
                       onTapDown: (TapDownDetails detail) {
-                        timer = Timer.periodic(Duration(milliseconds: 100), (t) {
+                        _timer =
+                            Timer.periodic(Duration(milliseconds: 100), (t) {
                           setState(() {
-                            _serving += 10;
-                            _adjustFraction = _serving / widget.ingredientData["serving"];
-                            _configValue();
+                            _currentServing += 10;
+                            _currentIngredient.setAdjustFraction(
+                                _currentServing,
+                                _currentServing / _currentIngredient.serving);
                           });
                         });
                       },
                       onTapUp: (TapUpDetails detail) {
-                        timer.cancel();
+                        _timer.cancel();
                       },
                       onTap: () {
                         setState(() {
-                          _serving += 10;
-                          _adjustFraction = _serving / widget.ingredientData["serving"];
-                          _configValue();
+                          _currentServing += 10;
+                          _currentIngredient.setAdjustFraction(_currentServing,
+                              _currentServing / _currentIngredient.serving);
                         });
                       },
                       child: Icon(
