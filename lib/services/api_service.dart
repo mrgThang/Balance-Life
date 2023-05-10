@@ -4,6 +4,7 @@ import 'dart:io' as io;
 import 'package:app/models/ingredient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../models/food.dart';
 import '../models/user_model.dart';
@@ -63,6 +64,23 @@ Future<dynamic> createFoods(Food food) async {
   } else {
     print('Create food failed with status: ${response.statusCode}');
   }
+}
+
+Future<dynamic> getMealsByDate({required int userId, required DateTime date,
+                                required bool showDetails, required bool showTotals}) async {
+  Map<String, dynamic> data = {
+    "user_id": userId,
+    "search_input": "",
+    "show_details": showDetails,
+    "show_total": showTotals,
+    "date": DateFormat('dd-MM-yyyy').format(date).toString()
+  };
+  var res = await sendPostRequest(
+    endpoint: "/meals/bydate/",
+    body: data,
+  );
+  var jsonRes = jsonDecode(res);
+  return jsonRes;
 }
 
 Future<dynamic> uploadImageForTheFood(Food food, int foodId, String imagePath) async {

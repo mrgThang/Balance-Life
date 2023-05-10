@@ -10,9 +10,9 @@ import '../../utils/constants.dart';
 import '../../models/ingredient.dart';
 
 class EditIngredientsPage extends StatefulWidget {
-  const EditIngredientsPage({super.key, required this.meal});
+  const EditIngredientsPage({super.key, required this.food});
 
-  final Food meal;
+  final Food food;
 
   @override
   State<EditIngredientsPage> createState() => _EditIngredientsPage();
@@ -28,12 +28,12 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
   @override
   void initState() {
     super.initState();
-    if(widget.meal.ingredients.isNotEmpty) {
-      _totalMacronutrients = widget.meal.getTotalMacronutrients();
-      _totalVitamins = widget.meal.getTotalVitamins();
-      _totalMinerals = widget.meal.getTotalMinerals();
-      _totalAminoAcids = widget.meal.getTotalAminoAcids();
-      _totalFattyAcids = widget.meal.getTotalFattyAcids();
+    if(widget.food.ingredients.isNotEmpty) {
+      _totalMacronutrients = widget.food.getTotalMacronutrients();
+      _totalVitamins = widget.food.getTotalVitamins();
+      _totalMinerals = widget.food.getTotalMinerals();
+      _totalAminoAcids = widget.food.getTotalAminoAcids();
+      _totalFattyAcids = widget.food.getTotalFattyAcids();
     }
   }
 
@@ -43,7 +43,7 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.meal.name,
+        title: Text(widget.food.name,
             style: const TextStyle(
               color: Color(APP_COLORS.GREEN),
             )),
@@ -52,7 +52,7 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
           icon: const Icon(IconlyLight.arrow_left_2,
               color: Color(APP_COLORS.GRAY)),
           onPressed: () {
-            Navigator.of(context).pop(widget.meal);
+            Navigator.of(context).pop(widget.food);
           },
         ),
       ),
@@ -156,13 +156,13 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
                 },
                 onSelected: (String selection) async {
                   var data = await getDetailIngredient(selection);
-                  widget.meal.ingredients = await Navigator.push(
+                  widget.food.ingredients = await Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (_, __, ___) => ConfigValuePage(
                         ingredientData: data,
-                        ingredientList: widget.meal.ingredients,
-                        indexIngredientList: widget.meal.ingredients.length,
+                        ingredientList: widget.food.ingredients,
+                        indexIngredientList: widget.food.ingredients.length,
                         isNew: true,
                       ),
                       transitionDuration: Duration(milliseconds: 500),
@@ -181,13 +181,13 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
                     ),
                   );
                   FocusManager.instance.primaryFocus?.unfocus();
-                  if(widget.meal.ingredients.isNotEmpty) {
+                  if(widget.food.ingredients.isNotEmpty) {
                     _totalMacronutrients =
-                    await widget.meal.getTotalMacronutrients();
-                    _totalVitamins = await widget.meal.getTotalVitamins();
-                    _totalMinerals = await widget.meal.getTotalMinerals();
-                    _totalAminoAcids = await widget.meal.getTotalAminoAcids();
-                    _totalFattyAcids = await widget.meal.getTotalFattyAcids();
+                    await widget.food.getTotalMacronutrients();
+                    _totalVitamins = await widget.food.getTotalVitamins();
+                    _totalMinerals = await widget.food.getTotalMinerals();
+                    _totalAminoAcids = await widget.food.getTotalAminoAcids();
+                    _totalFattyAcids = await widget.food.getTotalFattyAcids();
                   }
                   setState(() {});
                 },
@@ -210,7 +210,7 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
                   1: FlexColumnWidth(MediaQuery.of(context).size.width * 0.10),
                 },
                 children: [
-                  ...widget.meal.ingredients.map((e) => TableRow(
+                  ...widget.food.ingredients.map((e) => TableRow(
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
@@ -234,12 +234,12 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
                             child: TextButton(
                               child: Text("Change"),
                               onPressed: () async {
-                                widget.meal.ingredients = await Navigator.push(
+                                widget.food.ingredients = await Navigator.push(
                                   context,
                                   PageRouteBuilder(
                                     pageBuilder: (_, __, ___) => ConfigValuePage(
-                                      ingredientList: widget.meal.ingredients,
-                                      indexIngredientList: widget.meal.ingredients.indexOf(e),
+                                      ingredientList: widget.food.ingredients,
+                                      indexIngredientList: widget.food.ingredients.indexOf(e),
                                       isNew: false,
                                     ),
                                     transitionDuration: Duration(milliseconds: 500),
@@ -257,13 +257,13 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
                                     },
                                   ),
                                 );
-                                if(widget.meal.ingredients.isNotEmpty) {
+                                if(widget.food.ingredients.isNotEmpty) {
                                   _totalMacronutrients =
-                                  await widget.meal.getTotalMacronutrients();
-                                  _totalVitamins = await widget.meal.getTotalVitamins();
-                                  _totalMinerals = await widget.meal.getTotalMinerals();
-                                  _totalAminoAcids = await widget.meal.getTotalAminoAcids();
-                                  _totalFattyAcids = await widget.meal.getTotalFattyAcids();
+                                  await widget.food.getTotalMacronutrients();
+                                  _totalVitamins = await widget.food.getTotalVitamins();
+                                  _totalMinerals = await widget.food.getTotalMinerals();
+                                  _totalAminoAcids = await widget.food.getTotalAminoAcids();
+                                  _totalFattyAcids = await widget.food.getTotalFattyAcids();
                                 }
                                 setState(() {});
                               },

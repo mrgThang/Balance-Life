@@ -58,7 +58,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
       vitamins.add(nutrientData[VITAMIN_NAMES[i]] != null
           ? Nutrients(
               VITAMIN_NAMES[i],
-              nutrientData[VITAMIN_NAMES[i]]["ammount"],
+              nutrientData[VITAMIN_NAMES[i]]["amount"],
               nutrientData[VITAMIN_NAMES[i]]["rda"],
               adjustFraction,
             )
@@ -74,7 +74,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
       minerals.add(nutrientData[MINERAL_NAMES[i]] != null
           ? Nutrients(
               MINERAL_NAMES[i],
-              nutrientData[MINERAL_NAMES[i]]["ammount"],
+              nutrientData[MINERAL_NAMES[i]]["amount"],
               nutrientData[MINERAL_NAMES[i]]["rda"],
               adjustFraction,
             )
@@ -90,7 +90,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
       aminioAcids.add(nutrientData[AMINO_ACIDS_NAMES[i]] != null
           ? Nutrients(
               AMINO_ACIDS_NAMES[i],
-              nutrientData[AMINO_ACIDS_NAMES[i]]["ammount"],
+              nutrientData[AMINO_ACIDS_NAMES[i]]["amount"],
               nutrientData[AMINO_ACIDS_NAMES[i]]["rda"],
               adjustFraction,
             )
@@ -106,7 +106,7 @@ class _ConfigValuePage extends State<ConfigValuePage> {
       fattyAcids.add(nutrientData[FATTY_ACIDS_NAMES[i]] != null
           ? Nutrients(
               FATTY_ACIDS_NAMES[i],
-              nutrientData[FATTY_ACIDS_NAMES[i]]["ammount"],
+              nutrientData[FATTY_ACIDS_NAMES[i]]["amount"],
               nutrientData[FATTY_ACIDS_NAMES[i]]["rda"],
               adjustFraction,
             )

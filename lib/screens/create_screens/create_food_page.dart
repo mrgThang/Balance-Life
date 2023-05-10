@@ -111,7 +111,7 @@ class _CreateFoodPage extends State<CreateFoodPage> {
                           _food = await Navigator.push(
                             context,
                             PageRouteBuilder(
-                              pageBuilder: (_, __, ___) => EditIngredientsPage(meal: _food,),
+                              pageBuilder: (_, __, ___) => EditIngredientsPage(food: _food,),
                               transitionDuration: Duration(milliseconds: 500),
                               transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                 const begin = Offset(0.0, -1.0);

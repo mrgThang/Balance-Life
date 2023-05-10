@@ -120,8 +120,11 @@ class _ControlPage extends State<ControlPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _currentTitle[_currentIndex],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.01), // here the desired height
+        child: AppBar(
+          automaticallyImplyLeading: false
+        ),
       ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

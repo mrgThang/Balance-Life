@@ -1,7 +1,15 @@
+import 'package:app/models/meal.dart';
 import 'package:app/screens/control_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+
+import '../models/food.dart';
+import '../models/user_model.dart';
+import '../services/api_service.dart';
+import '../utils/common_functions.dart';
+import '../widgets/food_card.dart';
+import '../widgets/nutrients_table.dart';
 
 class HomePage extends StatefulWidget {
   final CameraDescription camera;
@@ -12,6 +20,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  DailyMeals _customerDailyMeals = DailyMeals();
+  Meal _customerBreakfast = Meal();
+  Meal _customerLunch = Meal();
+  Meal _customerDinner = Meal();
+
+  Future<void> getMealsDataOfCustomer() async {
+    var dailyMealsData = await getMealsByDate(userId: customer?.id ?? 0, date: DateTime.now(), showDetails: true, showTotals: true);
+    _customerDailyMeals = createDailyMealsObjectFromJson(dailyMealsData);
+    for(Meal meal in _customerDailyMeals.mealList) {
+      if(meal.time == "Breakfast") {
+        _customerBreakfast = meal;
+      } else if(meal.time == "Lunch") {
+        _customerLunch = meal;
+      } else {
+        _customerDinner = meal;
+      }
+    }
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if(currentUser?.role == "Specialist") {
+      getMealsDataOfCustomer();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +57,20 @@ class _HomePage extends State<HomePage> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
+            Visibility(
+              visible: currentUser?.role == "Specialist",
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
+                child: Text(
+                  "${customer?.get_full_name() ?? ""} Profile",
+                  style: const TextStyle(
+                    color: Color(0xff91c788),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 30),
               child: Row(
@@ -153,10 +204,52 @@ class _HomePage extends State<HomePage> {
                 ],
               ),
             ),
+            Visibility(
+              visible: currentUser?.role == "Normal",
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                    child: Text(
+                      "Your Plan",
+                      style: TextStyle(
+                        color: Color(0xff91c788),
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Plan(
+                    linkImage:
+                        "https://reviewed-com-res.cloudinary.com/image/fetch/s---oGP6J6d--/b_white,c_fill,cs_srgb,f_auto,fl_progressive.strip_profile,g_auto,h_729,q_auto,w_972/https://reviewed-production.s3.amazonaws.com/1568123038734/Bfast.png",
+                    label: "Breakfast",
+                    x: 0.8,
+                    y: 0.9,
+                    camera: widget.camera,
+                  ),
+                  Plan(
+                    linkImage:
+                        "https://img.vietcetera.com/wp-content/uploads/2017/07/Local-Lunch-Featured.jpg",
+                    label: "Lunch",
+                    x: -0.5,
+                    y: 0.9,
+                    camera: widget.camera,
+                  ),
+                  Plan(
+                    linkImage:
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeml6HU53NPLRy_90C9RRb9-O0gBEQnYB5OA&usqp=CAU",
+                    label: "Dinner",
+                    x: 0.8,
+                    y: 0.9,
+                    camera: widget.camera,
+                  ),
+                ],
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
               child: Text(
-                "Your Plan",
+                "Food Diary",
                 style: TextStyle(
                   color: Color(0xff91c788),
                   fontSize: 25,
@@ -164,10 +257,6 @@ class _HomePage extends State<HomePage> {
                 ),
               ),
             ),
-            Plan(linkImage: "https://reviewed-com-res.cloudinary.com/image/fetch/s---oGP6J6d--/b_white,c_fill,cs_srgb,f_auto,fl_progressive.strip_profile,g_auto,h_729,q_auto,w_972/https://reviewed-production.s3.amazonaws.com/1568123038734/Bfast.png", label: "Breakfast", x: 0.8, y: 0.9, camera: widget.camera),
-            Plan(linkImage: "https://img.vietcetera.com/wp-content/uploads/2017/07/Local-Lunch-Featured.jpg", label: "Lunch", x: -0.5, y: 0.9, camera: widget.camera),
-            Plan(linkImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeml6HU53NPLRy_90C9RRb9-O0gBEQnYB5OA&usqp=CAU", label: "Dinner", x: 0.8, y: 0.9, camera: widget.camera),
-            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
@@ -175,6 +264,100 @@ class _HomePage extends State<HomePage> {
                 CircleNutrition(label: "Carbs", color1: Colors.green, color2: Color(0xffeff7ee), a: 198, b: 243),
                 CircleNutrition(label: "Fats", color1: Colors.yellow, color2: Color(0xfffff8eb), a: 180, b: 213),
               ],
+            ),
+            Visibility(
+              visible: currentUser?.role == "Specialist",
+              child: Column(
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(30, 30, 0, 30),
+                      child: Text(
+                        "Breakfast",
+                        style: TextStyle(
+                          color: Color(0xff91c788),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          for (Food food in _customerBreakfast.foodList) FoodCard(food: food)
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(30, 30, 0, 30),
+                      child: Text(
+                        "Lunch",
+                        style: TextStyle(
+                          color: Color(0xff91c788),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          for (Food food in _customerLunch.foodList) FoodCard(food: food)
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(30, 30, 0, 30),
+                      child: Text(
+                        "Dinner",
+                        style: TextStyle(
+                          color: Color(0xff91c788),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          for (Food food in _customerDinner.foodList) FoodCard(food: food)
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  NutrientsTable(
+                    vitamins: _customerDailyMeals.getTotalVitamins(),
+                    minerals: _customerDailyMeals.getTotalMinerals(),
+                    aminoAcids: _customerDailyMeals.getTotalAminoAcids(),
+                    fattyAcids: _customerDailyMeals.getTotalFattyAcids(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
