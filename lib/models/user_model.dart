@@ -8,12 +8,18 @@ class User {
   String first_name;
   String last_name;
   final String imageUrl;
+  final String role;
+  final int? customer_id;
+  final int? specialist_id;
 
   User({
     required this.id,
     required this.first_name,
     required this.last_name,
     required this.imageUrl,
+    required this.role,
+    required this.customer_id,
+    required this.specialist_id
   });
 
   String get_full_name() {
@@ -22,6 +28,7 @@ class User {
 }
 
 User? currentUser;
+User? customer;
 List<User> userList = [];
 Map<int, User> user_by_id = {};
 
@@ -36,6 +43,9 @@ User json_to_user(json) {
     first_name: json['first_name'],
     last_name: json['last_name'],
     imageUrl: imageUrl,
+    role: json['role'],
+    customer_id: json['customer_id'],
+    specialist_id: json['specialist_id']
   );
   return user;
 }
@@ -79,7 +89,33 @@ Future<User> login({required body}) async {
     first_name: jsonRes['first_name'],
     last_name: jsonRes['last_name'],
     imageUrl: 'http://' + url + jsonRes['profile_image'],
+    role: jsonRes['role'],
+    customer_id: jsonRes['customer_id'],
+    specialist_id: jsonRes['specialist_id']
   );
+  if(jsonRes['role'] == "Specialist") {
+    customer = await getUser(body: {"user_id": jsonRes["customer_id"]});
+  }
   user_by_id[currentUser!.id] = currentUser!;
   return currentUser!;
 }
+
+Future<User> getUser({required body}) async {
+  var res = await sendPostRequest(
+    endpoint: "accounts/profile/",
+    body: body,
+  );
+  var jsonRes = jsonDecode(res);
+  print(jsonRes);
+
+  return User(
+    id: jsonRes['id'],
+    first_name: jsonRes['first_name'],
+    last_name: jsonRes['last_name'],
+    imageUrl: 'http://' + url + jsonRes['profile_image'],
+    role: jsonRes['role'],
+    customer_id: jsonRes['customer_id'],
+    specialist_id: jsonRes['specialist_id']
+  );
+}
+

@@ -20,23 +20,14 @@ class Macronutrients extends StatelessWidget{
     this.adjustFraction = adjustFraction;
     if (this.tail == "cal") {
       double new_value = this.value * 100 * adjustFraction;
-      if (new_value.toStringAsFixed(1) == "${new_value.toStringAsFixed(0)}.0") {
-        this.renderString = "${new_value.toStringAsFixed(0)}k${this.tail}";
-      }
-      this.renderString = "${new_value.toStringAsFixed(1)}k${this.tail}";
+      this.renderString = "${new_value.toStringAsFixed(0)}k${this.tail}";
     } else {
       double new_value = this.value / 10 * adjustFraction;
       if (new_value >= 1000) {
         new_value = new_value / 1000;
-        if (new_value.toStringAsFixed(1) == "${new_value.toStringAsFixed(0)}.0") {
-          this.renderString = "${new_value.toStringAsFixed(0)}${this.tail}";
-        }
-        this.renderString = "${new_value.toStringAsFixed(1)}${this.tail}";
+        this.renderString = "${new_value.toStringAsFixed(0)}${this.tail}";
       }
-      if (new_value.toStringAsFixed(1) == "${new_value.toStringAsFixed(0)}.0") {
-        this.renderString = "${new_value.toStringAsFixed(0)}m${this.tail}";
-      }
-      this.renderString = "${new_value.toStringAsFixed(1)}m${this.tail}";
+      this.renderString = "${new_value.toStringAsFixed(0)}m${this.tail}";
     }
   }
 

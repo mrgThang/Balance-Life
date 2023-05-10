@@ -6,17 +6,17 @@ import '../widgets/nutrients.dart';
 import 'ingredient.dart';
 
 class Food {
+  int foodId = 0;
   String name = "";
-  String description = "";
+  String description = "This very tasty food will make your day!";
+  String imageUrl = "";
   List<Ingredient> ingredients = <Ingredient>[];
 
   List<Macronutrients> getTotalMacronutrients() {
-    List<Macronutrients> totalMacronutrients = <Macronutrients>[
-      Macronutrients("", 0, "", 1.0),
-      Macronutrients("", 0, "", 1.0),
-      Macronutrients("", 0, "", 1.0),
-      Macronutrients("", 0, "", 1.0)
-    ];
+    List<Macronutrients> totalMacronutrients = List<Macronutrients>.generate(4, (index) {
+      Macronutrients macronutrients = Macronutrients("", 0, "", 1.0);
+      return macronutrients;
+    });
     for(Ingredient i in ingredients) {
       List<Macronutrients> currentMacronutrients = List.from(i.macronutrient);
       for(int index = 0; index < totalMacronutrients.length; ++index) {
@@ -30,21 +30,10 @@ class Food {
   }
 
   List<Nutrients> getTotalVitamins() {
-    List<Nutrients> totalVitamins = <Nutrients>[
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-    ];
+    List<Nutrients> totalVitamins = List<Nutrients>.generate(13, (index) {
+      Nutrients nutrients = Nutrients("", 0.0, 1.0, 1.0);
+      return nutrients;
+    });
     for(Ingredient i in ingredients) {
       List<Nutrients> currentVitamins = List.from(i.vitamins);
       for(int index = 0; index < totalVitamins.length; ++index) {
@@ -60,22 +49,10 @@ class Food {
   }
 
   List<Nutrients> getTotalMinerals() {
-    List<Nutrients> totalMinerals = <Nutrients>[
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-    ];
+    List<Nutrients> totalMinerals = List<Nutrients>.generate(14, (index) {
+      Nutrients nutrients = Nutrients("", 0.0, 1.0, 1.0);
+      return nutrients;
+    });
     for(Ingredient i in ingredients) {
       List<Nutrients> currentMinerals = List.from(i.minerals);
       for(int index = 0; index < totalMinerals.length; ++index) {
@@ -91,17 +68,10 @@ class Food {
   }
 
   List<Nutrients> getTotalAminoAcids() {
-    List<Nutrients> totalAminoAcids = <Nutrients>[
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-    ];
+    List<Nutrients> totalAminoAcids = List<Nutrients>.generate(9, (index) {
+      Nutrients nutrients = Nutrients("", 0.0, 1.0, 1.0);
+      return nutrients;
+    });
     for(Ingredient i in ingredients) {
       List<Nutrients> currentAminoAcids = List.from(i.aminioAcids);
       for(int index = 0; index < totalAminoAcids.length; ++index) {
@@ -117,10 +87,10 @@ class Food {
   }
 
   List<Nutrients> getTotalFattyAcids() {
-    List<Nutrients> totalFattyAcids = <Nutrients>[
-      Nutrients("", 0.0, 1.0, 1.0),
-      Nutrients("", 0.0, 1.0, 1.0),
-    ];
+    List<Nutrients> totalFattyAcids = List<Nutrients>.generate(2, (index) {
+      Nutrients nutrients = Nutrients("", 0.0, 1.0, 1.0);
+      return nutrients;
+    });
     for(Ingredient i in ingredients) {
       List<Nutrients> currentFattyAcids = List.from(i.fattyAcids);
       for(int index = 0; index < totalFattyAcids.length; ++index) {

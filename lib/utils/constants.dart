@@ -14,6 +14,11 @@ class APP_COLORS {
   static const int SEARCH_BAR_TEXT = 0xff999999;
 
   static const int GREEN_BOTTOM_BAR = 0xffeff7ee;
+
+  static const int PROTEIN_PIE_CHART = 0xff009299;
+  static const int FAT_PIE_CHART = 0xff7ed957;
+  static const int CARBS_PIE_CHART = 0xff00b980;
+
 }
 
 class CustomColorScheme {
