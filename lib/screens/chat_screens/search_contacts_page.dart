@@ -30,7 +30,7 @@ class _SearchContactsPageState extends State<SearchContactsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 1.0,
         backgroundColor: Colors.white,
