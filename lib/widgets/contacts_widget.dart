@@ -6,7 +6,11 @@ import '../screens/chat_screens/chat_page.dart';
 import '../utils/constants.dart';
 
 class Contacts extends StatelessWidget {
-  const Contacts({super.key});
+  List<User> contactList;
+  Contacts({
+    super.key,
+    required this.contactList,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +21,11 @@ class Contacts extends StatelessWidget {
         child: ListView.builder(
           padding: EdgeInsets.only(left: 10.0),
           scrollDirection: Axis.horizontal,
-          itemCount: userList.length,
+          itemCount: contactList.length,
           itemBuilder: (BuildContext context, int index) {
-            final User user = userList[index];
+            final User user = contactList[index];
             ChatRoom chatroom = ChatRoom(title: '${user.get_full_name()}');
-            chatroom.user = userList[index];
+            chatroom.user = contactList[index];
             return GestureDetector(
               onTapUp: (details) => Navigator.push(
                 context,
@@ -35,7 +39,8 @@ class Contacts extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 35.0,
-                      backgroundImage: NetworkImage(userList[index].imageUrl),
+                      backgroundImage:
+                          NetworkImage(contactList[index].imageUrl),
                       backgroundColor: Colors.transparent,
                     ),
                     SizedBox(height: 6.0),

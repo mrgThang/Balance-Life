@@ -9,8 +9,8 @@ class User {
   String last_name;
   final String imageUrl;
   final String role;
-  final int? customer_id;
-  final int? specialist_id;
+  int? customer_id;
+  int? specialist_id;
   String caption;
 
   User({
@@ -31,6 +31,7 @@ class User {
 
 User? currentUser;
 User? customer;
+User? specialist;
 List<User> userList = [];
 Map<int, User> user_by_id = {};
 
@@ -102,7 +103,11 @@ Future<User> login({required body}) async {
     caption: jsonRes['caption'],
   );
   if (jsonRes['role'] == "Specialist") {
-    customer = await getUser(body: {"user_id": jsonRes["customer_id"]});
+    if (jsonRes["customer_id"] != null)
+      customer = await getUser(body: {"user_id": jsonRes["customer_id"]});
+  } else {
+    if (jsonRes["specialist_id"] != null)
+      specialist = await getUser(body: {"user_id": jsonRes["specialist_id"]});
   }
   user_by_id[currentUser!.id] = currentUser!;
   return currentUser!;

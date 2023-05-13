@@ -1,17 +1,21 @@
 import 'package:app/models/message_model.dart';
 import 'package:app/models/user_model.dart';
 import 'package:app/screens/chat_screens/chat_page.dart';
+import 'package:app/services/api_service.dart';
 import 'package:app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:iconly/iconly.dart';
+import 'package:path/path.dart';
 
 class UserDetailPage extends StatefulWidget {
   final User user;
-  const UserDetailPage({
+  Function callback;
+  UserDetailPage({
     super.key,
     required this.user,
+    required this.callback,
   });
 
   @override
@@ -30,6 +34,13 @@ class _UserDetailPageState extends State<UserDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isworkingwith = false;
+    if (currentUser != null) {
+      isworkingwith = (currentUser!.role == "Normal"
+              ? currentUser!.specialist_id
+              : currentUser!.customer_id) ==
+          widget.user.id;
+    }
     return Scaffold(
       body: Container(
         width: double.maxFinite,
@@ -228,24 +239,99 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       child: SizedBox(
                         width: double.infinity,
                         height: 60,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(APP_COLORS.GREEN),
-                            elevation: 0,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(50),
+                        child: isworkingwith
+                            ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(APP_COLORS.RED_BUTTON),
+                                  elevation: 0,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (currentUser == null) return;
+                                  sendPostRequest(
+                                          endpoint:
+                                              "accounts/${currentUser!.id}/remove_${widget.user.role == "Normal" ? "customer" : "specialist"}")
+                                      .then((value) {
+                                    if (currentUser!.role == "Normal") {
+                                      currentUser!.specialist_id = null;
+                                      specialist = null;
+                                    } else {
+                                      currentUser!.customer_id = null;
+                                      customer = null;
+                                    }
+                                    setState(() {
+                                      print(specialist);
+                                      print(customer);
+                                      widget.callback();
+                                    });
+                                  });
+                                },
+                                child: Text(
+                                  "Stop working with this ${widget.user.role == "Normal" ? "customer" : "specialist"}.",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                            : ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Color(APP_COLORS.GREEN_BUTTON),
+                                  elevation: 0,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (currentUser == null) return;
+                                  String workwithrole =
+                                      "${widget.user.role == "Normal" ? "customer" : "specialist"}";
+
+                                  sendPostRequest(
+                                    endpoint:
+                                        "accounts/${currentUser!.id}/add_$workwithrole",
+                                    body: {
+                                      "${workwithrole}_id": widget.user.id
+                                    },
+                                  ).then((value) {
+                                    getUser(body: {"user_id": widget.user.id})
+                                        .then(
+                                      (user) {
+                                        if (currentUser!.role == "Normal") {
+                                          specialist = user;
+                                          currentUser!.specialist_id = user.id;
+                                        } else {
+                                          customer = user;
+                                          currentUser!.customer_id = user.id;
+                                        }
+                                        setState(() {
+                                          print(specialist);
+                                          print(customer);
+                                          widget.callback();
+                                        });
+                                      },
+                                    );
+                                  });
+                                },
+                                child: Text(
+                                  currentUser!.role == "Normal"
+                                      ? "Let them see your diet"
+                                      : "Advise this client",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text("Let them see your diet",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              )),
-                        ),
                       ),
                     ),
                   ],

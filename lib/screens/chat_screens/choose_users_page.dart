@@ -2,32 +2,64 @@ import 'package:app/models/user_model.dart';
 import 'package:app/screens/chat_screens/user_detail_page.dart';
 import 'package:flutter/material.dart';
 
-class ChooseUserPage extends StatelessWidget {
+class ChooseUserPage extends StatefulWidget {
   const ChooseUserPage({
     super.key,
   });
 
   @override
+  State<ChooseUserPage> createState() => _ChooseUserPageState();
+}
+
+class _ChooseUserPageState extends State<ChooseUserPage> {
+  void callback() {
+    setState(() {});
+    print("CALL BACK!!!!");
+  }
+
+  @override
   Widget build(BuildContext context) {
+    User? userworkwith = currentUser?.role == "Normal" ? specialist : customer;
+    print(userworkwith);
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: SafeArea(
           child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text(
-                  "Choose your ${currentUser?.role == "Normal" ? "specialist" : "customer"}",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              for (int i = 0; i < userList.length; i++)
-                UserCard(user: userList[i]),
-            ],
+            children: userworkwith == null
+                ? [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Text(
+                        "Choose your ${currentUser?.role == "Normal" ? "specialist" : "customer"}",
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    for (int i = 0; i < userList.length; i++)
+                      UserCard(
+                        user: userList[i],
+                        callback: this.callback,
+                      ),
+                  ]
+                : [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Text(
+                        "Your current ${currentUser?.role == "Normal" ? "specialist" : "customer"}",
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    UserCard(
+                      user: userworkwith,
+                      callback: this.callback,
+                    ),
+                  ],
           ),
         ),
       ),
@@ -37,9 +69,11 @@ class ChooseUserPage extends StatelessWidget {
 
 class UserCard extends StatelessWidget {
   User user;
+  Function callback;
   UserCard({
     super.key,
     required User this.user,
+    required this.callback,
   });
 
   @override
@@ -51,7 +85,8 @@ class UserCard extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             PageRouteBuilder(
-              pageBuilder: (_, __, ___) => UserDetailPage(user: user),
+              pageBuilder: (_, __, ___) =>
+                  UserDetailPage(user: user, callback: callback),
               transitionDuration: Duration(seconds: 1),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
