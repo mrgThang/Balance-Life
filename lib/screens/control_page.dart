@@ -100,19 +100,6 @@ class _ControlPage extends State<ControlPage> {
       HomePage(camera: widget.camera),
       PlanPage(label: widget.plan),
       CameraPage(camera: widget.camera),
-      // MaterialApp(
-      //   title: 'Flutter Demo',
-      //   debugShowCheckedModeBanner: false,
-      //   theme: theme.copyWith(
-      //     colorScheme: theme.colorScheme.copyWith(
-      //       tertiary: Color(0xFFA5D19E),
-      //       secondary: Color(0xFFFFF7ED),
-      //       onSurface: Color(0xFF999999),
-      //       primary: Color(0xFF91C789),
-      //     ),
-      //   ),
-      //   home: ChatHomePage(),
-      // ),
       ChatHomePage(),
       ProfilePage(camera: widget.camera),
     ];

@@ -6,6 +6,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/models/user_model.dart';
+import 'package:iconly/iconly.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -25,7 +26,8 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final ScrollController _controller = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+  late FocusNode _textFocus;
   bool _needScroll = false;
   bool _loadedMessages = false;
   bool _showEmoji = false;
@@ -101,6 +103,12 @@ class _ChatPageState extends State<ChatPage> {
       );
       setState(() {});
     });
+
+    _textFocus = FocusNode();
+    _textFocus.addListener(() {
+      bool onFocus = _textFocus.hasFocus;
+      print("On focus ${onFocus}");
+    });
   }
 
   Future<void> sendImageMessage(File imagefile) async {
@@ -152,60 +160,62 @@ class _ChatPageState extends State<ChatPage> {
       _needScroll = false;
     }
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 1.0,
-          toolbarHeight: 60,
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          flexibleSpace: SizedBox(
-            height: 60,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                  iconSize: 30.0,
-                  icon: Icon(
-                    Icons.arrow_back_ios_new_rounded,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          print("On tap");
+          setState(() {
+            _showEmoji = false;
+          });
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 1.0,
+            toolbarHeight: 60,
+            backgroundColor: Colors.white,
+            automaticallyImplyLeading: false,
+            flexibleSpace: SizedBox(
+              height: 60,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    iconSize: 30.0,
+                    icon: const Icon(
+                      IconlyLight.arrow_left_2,
+                    ),
+                    color: Color(APP_COLORS.GRAY),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  color: mColorScheme.icon,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 25.0,
-                        backgroundImage: NetworkImage(imageUrl),
-                        backgroundColor: Colors.transparent,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        '${widget.chatroom.title}',
-                        style: TextStyle(
-                          color: mColorScheme.chat_header,
-                          fontWeight: FontWeight.normal,
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          radius: 25.0,
+                          backgroundImage: NetworkImage(imageUrl),
+                          backgroundColor: Colors.transparent,
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          '${widget.chatroom.title}',
+                          style: TextStyle(
+                            color: mColorScheme.chat_header,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            _showEmoji = false;
-            setState() {}
-          },
-          child: Column(
+          body: Column(
             children: [
               Expanded(
                 child: Container(
@@ -213,7 +223,7 @@ class _ChatPageState extends State<ChatPage> {
                   child: _loadedMessages
                       ? (messageList.length > 0
                           ? ListView.builder(
-                              controller: _controller,
+                              controller: _scrollController,
                               padding: EdgeInsets.only(
                                 top: 15.0,
                               ),
@@ -259,7 +269,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
               _buildMessageComposer(),
-              if (_showEmoji)
+              if (_showEmoji && !_textFocus.hasFocus)
                 SizedBox(
                   height: 250,
                   child: EmojiPicker(
@@ -359,10 +369,15 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 Expanded(
                   child: TextField(
+                    focusNode: _textFocus,
                     controller: _textController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        _showEmoji = false;
+                      });
+                    },
                     decoration: InputDecoration(
                       hintText: "Send message",
                       border: InputBorder.none,
@@ -374,6 +389,11 @@ class _ChatPageState extends State<ChatPage> {
                   onPressed: () {
                     setState(() {
                       _showEmoji = !_showEmoji;
+                      if (!_showEmoji) {
+                        _textFocus.requestFocus();
+                      } else {
+                        _textFocus.unfocus();
+                      }
                     });
                   },
                   icon: Icon(
@@ -404,12 +424,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollDown() {
-    _controller.jumpTo(_controller.position.maxScrollExtent + 100);
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent + 100);
   }
 
   void _scrollDownSmooth() {
-    _controller.animateTo(
-      _controller.position.maxScrollExtent + 100,
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent + 100,
       duration: Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
     );
@@ -418,6 +438,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     channel?.sink.close();
+    _textFocus.dispose();
     super.dispose();
   }
 }
