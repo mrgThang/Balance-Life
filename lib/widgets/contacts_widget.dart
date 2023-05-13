@@ -11,7 +11,7 @@ class Contacts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.only(top: 4),
       child: Container(
         height: 130,
         child: ListView.builder(

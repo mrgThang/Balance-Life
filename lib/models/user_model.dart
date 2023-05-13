@@ -11,15 +11,18 @@ class User {
   final String role;
   final int? customer_id;
   final int? specialist_id;
+  String caption;
 
-  User(
-      {required this.id,
-      required this.first_name,
-      required this.last_name,
-      required this.imageUrl,
-      required this.role,
-      required this.customer_id,
-      required this.specialist_id});
+  User({
+    required this.id,
+    required this.first_name,
+    required this.last_name,
+    required this.imageUrl,
+    required this.role,
+    required this.customer_id,
+    required this.specialist_id,
+    required this.caption,
+  });
 
   String get_full_name() {
     return '${first_name} ${last_name}';
@@ -38,13 +41,15 @@ User json_to_user(json) {
     imageUrl = 'http://$url${json['profile_image']}';
   }
   User user = User(
-      id: json['id'],
-      first_name: json['first_name'],
-      last_name: json['last_name'],
-      imageUrl: imageUrl,
-      role: json['role'],
-      customer_id: json['customer_id'],
-      specialist_id: json['specialist_id']);
+    id: json['id'],
+    first_name: json['first_name'],
+    last_name: json['last_name'],
+    imageUrl: imageUrl,
+    role: json['role'],
+    customer_id: json['customer_id'],
+    specialist_id: json['specialist_id'],
+    caption: json['caption'],
+  );
   return user;
 }
 
@@ -87,13 +92,15 @@ Future<User> login({required body}) async {
   print(res);
   var jsonRes = jsonDecode(res);
   currentUser = User(
-      id: jsonRes['user_id'],
-      first_name: jsonRes['first_name'],
-      last_name: jsonRes['last_name'],
-      imageUrl: 'http://' + url + jsonRes['profile_image'],
-      role: jsonRes['role'],
-      customer_id: jsonRes['customer_id'],
-      specialist_id: jsonRes['specialist_id']);
+    id: jsonRes['user_id'],
+    first_name: jsonRes['first_name'],
+    last_name: jsonRes['last_name'],
+    imageUrl: 'http://' + url + jsonRes['profile_image'],
+    role: jsonRes['role'],
+    customer_id: jsonRes['customer_id'],
+    specialist_id: jsonRes['specialist_id'],
+    caption: jsonRes['caption'],
+  );
   if (jsonRes['role'] == "Specialist") {
     customer = await getUser(body: {"user_id": jsonRes["customer_id"]});
   }
@@ -111,11 +118,13 @@ Future<User> getUser({required body}) async {
   print(jsonRes);
 
   return User(
-      id: jsonRes['id'],
-      first_name: jsonRes['first_name'],
-      last_name: jsonRes['last_name'],
-      imageUrl: 'http://' + url + jsonRes['profile_image'],
-      role: jsonRes['role'],
-      customer_id: jsonRes['customer_id'],
-      specialist_id: jsonRes['specialist_id']);
+    id: jsonRes['id'],
+    first_name: jsonRes['first_name'],
+    last_name: jsonRes['last_name'],
+    imageUrl: 'http://' + url + jsonRes['profile_image'],
+    role: jsonRes['role'],
+    customer_id: jsonRes['customer_id'],
+    specialist_id: jsonRes['specialist_id'],
+    caption: jsonRes['caption'],
+  );
 }

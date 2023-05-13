@@ -17,16 +17,10 @@ class RecentChats extends StatefulWidget {
 class _RecentChatsState extends State<RecentChats> {
   @override
   Widget build(BuildContext context) {
+    print("${widget.chatRooms.length} rooms showing...");
     return Expanded(
       child: Container(
         height: 300,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-        ),
         child: ListView.builder(
           itemCount: widget.chatRooms.length,
           itemBuilder: (context, index) {
@@ -50,9 +44,6 @@ class _RecentChatsState extends State<RecentChats> {
               child: Container(
                 margin: EdgeInsets.only(top: 5.0),
                 padding: EdgeInsets.only(left: 15.0, right: 20.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

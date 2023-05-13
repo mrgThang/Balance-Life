@@ -9,8 +9,8 @@ import 'package:intl/intl.dart';
 import '../models/food.dart';
 import '../models/user_model.dart';
 
-const URL = 'http://192.168.0.102:8000/';
-var url = '192.168.0.102:8000';
+const URL = 'http://192.168.0.103:8000/';
+var url = '192.168.0.103:8000';
 
 Future<dynamic> getDetailIngredient(String ingredient) async {
   final url = Uri.parse('${URL}ingredients/');
