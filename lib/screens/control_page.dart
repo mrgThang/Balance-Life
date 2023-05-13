@@ -113,7 +113,7 @@ class _ControlPage extends State<ControlPage> {
         ),
         home: ChatHomePage(),
       ),
-      ProfilePage(),
+      ProfilePage(camera: widget.camera),
     ];
   }
 
