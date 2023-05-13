@@ -1,5 +1,6 @@
 import 'package:app/models/meal.dart';
 import 'package:app/screens/control_page.dart';
+import 'package:app/screens/create_screens/settings_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
@@ -114,7 +115,7 @@ class _HomePage extends State<HomePage> {
                     children: [
                       Container(
                         height: 50,
-                        width: 350 * 0.9, // % calo left sẽ đổi ở đây
+                        width: 350 * (limitCalories - 189) / limitCalories,
                         decoration: BoxDecoration(
                           color: const Color(0xff91c788),
                           borderRadius: BorderRadius.circular(10),
@@ -259,10 +260,10 @@ class _HomePage extends State<HomePage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                CircleNutrition(label: "Fats", color1: Colors.red, color2: Color(0xfffff2f0), a: 56, b: 68),
-                CircleNutrition(label: "Carbs", color1: Colors.green, color2: Color(0xffeff7ee), a: 198, b: 243),
-                CircleNutrition(label: "Fats", color1: Colors.yellow, color2: Color(0xfffff8eb), a: 180, b: 213),
+              children: [
+                CircleNutrition(label: "Fats", color1: Colors.red, color2: const Color(0xfffff2f0), a: 56, b: limitFats),
+                CircleNutrition(label: "Carbs", color1: Colors.green, color2: const Color(0xffeff7ee), a: 198, b: limitCarbs),
+                CircleNutrition(label: "Protein", color1: Colors.yellow, color2: const Color(0xfffff8eb), a: 180, b: limitProtein),
               ],
             ),
             Visibility(
@@ -407,7 +408,7 @@ class Plan extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               clipBehavior: Clip.antiAlias,
-              child: Image.network( // Khi nào kết nối với backend thì đổi cái này
+              child: Image.network(
                 linkImage,
                 fit: BoxFit.cover,
               ),
@@ -470,7 +471,7 @@ class CircleNutrition extends StatelessWidget {
             width: 60,
             child: CircularProgressIndicator(
               strokeWidth: 10,
-              backgroundColor: color2,
+              backgroundColor: Colors.white,
               valueColor: AlwaysStoppedAnimation<Color>(color1),
               value: a / b,
             ),

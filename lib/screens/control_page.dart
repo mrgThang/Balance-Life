@@ -67,8 +67,7 @@ class _ControlPage extends State<ControlPage> {
             const end = Offset.zero;
             const curve = Curves.ease;
 
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
             return SlideTransition(
               position: animation.drive(tween),
@@ -102,7 +101,7 @@ class _ControlPage extends State<ControlPage> {
       PlanPage(label: widget.plan),
       CameraPage(camera: widget.camera),
       ChatHomePage(),
-      ProfilePage(),
+      ProfilePage(camera: widget.camera),
     ];
   }
 
