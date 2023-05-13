@@ -291,7 +291,7 @@ class _HomePage extends State<HomePage> {
                       physics: const BouncingScrollPhysics(),
                       child: Row(
                         children: [
-                          for (Food food in _customerBreakfast.foodList) FoodCard(food: food)
+                          for (Food food in _customerBreakfast.foodList) FoodCard(food: food, callback: setState,)
                         ],
                       ),
                     ),
@@ -317,7 +317,7 @@ class _HomePage extends State<HomePage> {
                       physics: const BouncingScrollPhysics(),
                       child: Row(
                         children: [
-                          for (Food food in _customerLunch.foodList) FoodCard(food: food)
+                          for (Food food in _customerLunch.foodList) FoodCard(food: food, callback: setState)
                         ],
                       ),
                     ),
@@ -343,7 +343,7 @@ class _HomePage extends State<HomePage> {
                       physics: const BouncingScrollPhysics(),
                       child: Row(
                         children: [
-                          for (Food food in _customerDinner.foodList) FoodCard(food: food)
+                          for (Food food in _customerDinner.foodList) FoodCard(food: food, callback: setState)
                         ],
                       ),
                     ),

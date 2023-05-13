@@ -81,6 +81,7 @@ Meal createMealObjectFromJson(data) {
 }
 
 Food createFoodObjectFromJson(data) {
+  print(data);
   Food food = Food();
   food.name = data["food_name"];
   // food.description = data["description"];

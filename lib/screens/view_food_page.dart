@@ -3,19 +3,55 @@ import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 
 import '../models/food.dart';
+import '../models/user_model.dart';
 import '../utils/constants.dart';
 import '../widgets/macronutrients.dart';
 import '../widgets/nutrients_table.dart';
 
 class ViewFoodPage extends StatefulWidget {
   final Food food;
-  const ViewFoodPage({super.key, required this.food});
+  final String command;
+  final List<Food>? foodList;
+  const ViewFoodPage({super.key, required this.food, required this.command, this.foodList});
 
   @override
   State<ViewFoodPage> createState() => _ViewFoodPage();
+
 }
 
 class _ViewFoodPage extends State<ViewFoodPage> {
+  String _commandText = "";
+
+  void _clickCommand() {
+    if (currentUser?.role == "Normal") {
+      if (widget.foodList != null) {
+        print(1111);
+        if (widget.command == "Add") {
+          widget.foodList?.add(widget.food);
+        } else {
+          widget.foodList?.remove(widget.food);
+        }
+        Navigator.of(context).pop(widget.foodList);
+      }
+    } else {
+      // Command for specialist
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (currentUser?.role == "Normal") {
+      if (widget.command == "Add") {
+        _commandText = "Add food to meal";
+      } else {
+        _commandText = "Remove from meal";
+      }
+    } else {
+      _commandText = "Yes";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,6 +178,49 @@ class _ViewFoodPage extends State<ViewFoodPage> {
           ],
         ),
       )),
+      bottomNavigationBar: Container(
+          height: MediaQuery.of(context).size.height * 0.1,
+          child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+              ),
+              child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(width: 2.0, color: Colors.grey.shade300), // Set the width and color of the border
+                    ),
+                  ),
+                  child: BottomAppBar(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                _clickCommand();
+                              },
+                              style: ButtonStyle(
+                                shape:
+                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(15.0))),
+                                backgroundColor: MaterialStateProperty.resolveWith(
+                                        (states) => const Color(APP_COLORS.GREEN)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  _commandText,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]))))),
     );
   }
 }

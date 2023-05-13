@@ -1,5 +1,14 @@
-import 'package:app/utils/constants.dart';
+import 'package:app/screens/view_food_page.dart';
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
+
+import '../models/food.dart';
+import '../models/meal.dart';
+import '../models/user_model.dart';
+import '../services/api_service.dart';
+import '../utils/common_functions.dart';
+import '../utils/constants.dart';
+import '../widgets/food_card.dart';
 
 class PlanPage extends StatefulWidget {
   final String? label;
@@ -11,8 +20,43 @@ class PlanPage extends StatefulWidget {
 
 class _PlanPage extends State<PlanPage> {
   TextEditingController nameController = TextEditingController();
-  List<String> searchList = [];
+  List<dynamic> searchList = [];
   List<String> chosenList = [];
+  List<dynamic> foodList = [];
+  Meal _meal = Meal();
+
+  Future<void> getMealsDataOfUser() async {
+    var dailyMealsData = await getMealsByDate(userId: currentUser?.id ?? 0, date: DateTime.now(), showDetails: true, showTotals: true);
+    DailyMeals customerDailyMeals = createDailyMealsObjectFromJson(dailyMealsData);
+    for(Meal meal in customerDailyMeals.mealList) {
+      if(meal.time == (widget.label ?? "Breakfast")) {
+        _meal = meal;
+      }
+    }
+    setState(() {
+
+    });
+  }
+
+  void setAllState() {
+    setState((){print(11111);});
+  }
+
+  Future<void> getAllFoodsForSearching() async {
+    foodList = await getAllFoods();
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if(currentUser?.role == "Normal") {
+      getMealsDataOfUser();
+      getAllFoodsForSearching();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +77,12 @@ class _PlanPage extends State<PlanPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Container(
-              height: 50,
-              width: 340,
-              decoration: BoxDecoration(
-                color: const Color(0xffe1e1e1),
-                borderRadius: BorderRadius.circular(15),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                MediaQuery.of(context).size.width * 0.1,
+                MediaQuery.of(context).size.height * 0.004,
+                MediaQuery.of(context).size.width * 0.1,
+                MediaQuery.of(context).size.height * 0.004,
               ),
               child: TextField(
                 controller: nameController,
@@ -46,26 +90,41 @@ class _PlanPage extends State<PlanPage> {
                   fontSize: 18,
                   color: Color(0xffa7a7a7),
                 ),
-                decoration: const InputDecoration(
-                  icon: Icon(
-                    Icons.search,
-                    color: Color(0xffa7a7a7),
-                    size: 40.0,
+                decoration: InputDecoration(
+                  hintText: "Search for foods",
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  // Add a clear button to the search bar
+                  suffixIcon: IconButton(
+                    icon: const Icon(IconlyBold.close_square),
+                    onPressed: () {
+                      searchList = [];
+                      nameController.clear();
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+
+                      });
+                    }
                   ),
-                  hintText: "What do you want to eat today?",
-                  hintStyle: TextStyle(
-                    color: Color(0xffa7a7a7),
+                  // Add a search icon or button to the search bar
+                  prefixIcon: IconButton(
+                    icon: const Icon(IconlyLight.search),
+                    onPressed: () {},
                   ),
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true, //<-- SEE HERE
+                  fillColor: const Color(APP_COLORS.SEARCH_BAR_THEME),
                 ),
                 onChanged: (query) {
-                  List<String> d = [];
+                  List<dynamic> d = [];
                   if (query.isNotEmpty) {
-                    for (var i = 0; i < INGREDIENTS_DATA.length; i++) {
-                      String a = INGREDIENTS_DATA[i].toLowerCase();
+                    for (var i = 0; i < foodList.length; i++) {
+                      String a = foodList[i]["food_name"].toLowerCase();
                       String b = query.toLowerCase();
-                      if (a.contains(b)) {
-                        d.add(INGREDIENTS_DATA[i]);
+                      if (a.startsWith(b)) {
+                        d.add(foodList[i]);
                       }
                     }
                   }
@@ -76,6 +135,91 @@ class _PlanPage extends State<PlanPage> {
               ),
             ),
             const SizedBox(height: 20),
+            Container(
+              alignment: const Alignment(-0.8, -1),
+              child: const Text(
+                "Search Food",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Visibility(
+              visible: searchList.isEmpty,
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(25, 0, 25, 20),
+                child: Text(
+                  "No Results",
+                  style: TextStyle(
+                    color: Color(APP_COLORS.GREEN),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ),
+            Visibility(
+              visible: searchList.isNotEmpty,
+              child: Column(
+                children: [
+                  for (var i = 0; i < searchList.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(25, 0, 25, 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                                _meal.foodList = await Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (_, __, ___) => ViewFoodPage(
+                                      food: createFoodObjectFromJson(searchList[i]),
+                                      command: "Add",
+                                      foodList: _meal.foodList,
+                                    ),
+                                    transitionDuration: const Duration(milliseconds: 500),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.ease;
+
+                                      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                                await updateMeals(meal: _meal);
+                                setState(() {
+
+                                });
+                              },
+                            child: Text(
+                              searchList[i]["food_name"],
+                              style: const TextStyle(
+                                color: Color(APP_COLORS.GREEN),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.arrow_forward, size: 25),
+                            color: const Color(APP_COLORS.GREEN),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
             Container(
               alignment: const Alignment(-0.8, -1),
               child: const Text(
@@ -92,100 +236,11 @@ class _PlanPage extends State<PlanPage> {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
-                  for (var i = 0; i < chosenList.length; i++) ChosenFood(label: chosenList[i])
+                  for (Food food in _meal.foodList) FoodCard(food: food, meal: _meal, callback: setAllState),
                 ],
               ),
             ),
-            const SizedBox(height: 10),
-            Container(
-              alignment: const Alignment(-0.8, -1),
-              child: const Text(
-                "Search Results",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            for (var i = 0; i < searchList.length; i++)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (chosenList.contains(searchList[i])) {} else {chosenList.add(searchList[i]);}
-                        });
-                      },
-                      child: Text(
-                        searchList[i],
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.arrow_forward, size: 25),
-                    ),
-                  ],
-                ),
-              ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ChosenFood extends StatelessWidget {
-  final String label;
-  const ChosenFood({
-    Key? key,
-    required this.label,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-        child: Container(
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: const Color(0xfff4f4f4),
-          ),
-          child: Column(
-            children: [
-              Container(
-                height: 150,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Container(
-                alignment: const Alignment(-0.9, -1),
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
