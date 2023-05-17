@@ -26,8 +26,9 @@ class Macronutrients extends StatelessWidget{
       if (new_value >= 1000) {
         new_value = new_value / 1000;
         this.renderString = "${new_value.toStringAsFixed(0)}${this.tail}";
+      } else {
+        this.renderString = "${new_value.toStringAsFixed(0)}m${this.tail}";
       }
-      this.renderString = "${new_value.toStringAsFixed(0)}m${this.tail}";
     }
   }
 

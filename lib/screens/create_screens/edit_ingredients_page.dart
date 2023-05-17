@@ -8,6 +8,7 @@ import 'package:iconly/iconly.dart';
 import '../../models/food.dart';
 import '../../utils/constants.dart';
 import '../../models/ingredient.dart';
+import '../../widgets/chart.dart';
 
 class EditIngredientsPage extends StatefulWidget {
   const EditIngredientsPage({super.key, required this.food});
@@ -276,6 +277,13 @@ class _EditIngredientsPage extends State<EditIngredientsPage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             MacroNutrientsGroup(list: _totalMacronutrients),
+            Visibility(
+              visible: _totalMacronutrients.length > 0,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
+                child: MacronutrientsPieChart(macronutrients: _totalMacronutrients),
+              ),
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),

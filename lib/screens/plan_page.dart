@@ -69,9 +69,7 @@ class _PlanPage extends State<PlanPage> with RestorationMixin {
   Future<void> _selectDate(DateTime? newSelectedDate) async {
     if (newSelectedDate != null) {
       currentDate = newSelectedDate;
-      if(currentUser?.role == "Specialist") {
-        await getMealsDataOfUser();
-      }
+      await getMealsDataOfUser();
       setState(() {
         _selectedDate.value = newSelectedDate;
       });
