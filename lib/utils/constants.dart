@@ -5,6 +5,9 @@ class APP_COLORS {
   static const int GRAY = 0xff999999;
   static const int PINK = 0xffff8473;
   static const int LIGHT_PINK = 0xfffff8ee;
+  static const int GREEN_BUTTON = 0xff91C788;
+  static const int RED_BUTTON = 0xffff8473;
+
   static const int BLUE_PROGRESS_BAR = 0xff1890ff;
   static const int GREEN_PROGRESS_BAR = 0xff52c41a;
   static const int RED_PROGRESS_BAR = 0xfff5222d;

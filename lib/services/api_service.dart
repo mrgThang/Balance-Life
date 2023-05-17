@@ -10,8 +10,8 @@ import '../models/food.dart';
 import '../models/meal.dart';
 import '../models/user_model.dart';
 
-const URL = 'http://10.0.2.2:8000/';
-var url = '10.0.2.2:8000';
+const URL = 'http://192.168.2.8:8000/';
+var url = '192.168.2.8:8000';
 
 Future<dynamic> getDetailIngredient(String ingredient) async {
   final url = Uri.parse('${URL}ingredients/');
@@ -29,7 +29,6 @@ Future<dynamic> getDetailIngredient(String ingredient) async {
     body: jsonEncode(data),
   );
   if(response.statusCode == 200) {
-    print(response.body);
     return jsonDecode(response.body)[0];
   } else {
     print('Get detail ingredient failed with status: ${response.statusCode}');
@@ -60,7 +59,6 @@ Future<dynamic> createFoods(Food food) async {
     body: jsonEncode(data),
   );
   if(response.statusCode == 200) {
-    print(jsonDecode(response.body));
     return jsonDecode(response.body)["data"]["id"];
   } else {
     print('Create food failed with status: ${response.statusCode}');
@@ -103,7 +101,6 @@ Future<dynamic> uploadImageForTheFood(Food food, int foodId, String imagePath) a
     body: jsonEncode(data),
   );
   if(response.statusCode == 200) {
-    print(jsonDecode(response.body));
     return jsonDecode(response.body);
   } else {
     print('Upload food image failed with status: ${response.statusCode}');
@@ -122,6 +119,24 @@ Future<dynamic> getMealsByDate({required int userId, required DateTime date,
   };
   var res = await sendPostRequest(
     endpoint: "/meals/bydate/",
+    body: data,
+  );
+  var jsonRes = jsonDecode(res);
+  return jsonRes;
+}
+
+Future<dynamic> getMealsByWeek({required int userId, required DateTime date,
+  required bool showDetails, required bool showTotals}) async {
+  Map<String, dynamic> data = {
+    "user_id": userId,
+    "search_input": "",
+    "show_details": showDetails,
+    "show_total": showTotals,
+    "date": DateFormat('dd-MM-yyyy').format(date).toString(),
+    "pagesize": 20
+  };
+  var res = await sendPostRequest(
+    endpoint: "/meals/byweek/",
     body: data,
   );
   var jsonRes = jsonDecode(res);

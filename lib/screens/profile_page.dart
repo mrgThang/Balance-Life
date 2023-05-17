@@ -1,5 +1,6 @@
 import 'package:app/screens/create_screens/settings_page.dart';
 import 'package:app/screens/login_page.dart';
+import 'package:app/screens/progress_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
@@ -79,7 +80,26 @@ class _ProfilePage extends State<ProfilePage> {
               children: [
                 const RowProfile(icon: Icons.poll, label: "Statistics"),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => ProgressPage(),
+                        transitionDuration: Duration(seconds: 1),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.arrow_forward_ios, size: 25, color: Color(0xff707070)),
                 ),
               ],

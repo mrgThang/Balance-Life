@@ -6,12 +6,67 @@ import 'ingredient.dart';
 class Meal {
   int mealId = 0;
   String time = "";
+  String date = "";
   int userId = 0;
   List<Food> foodList = <Food>[];
+
+  dynamic getTotalMacroNutrients() {
+    var total = {};
+    for (Food food in foodList) {
+      for (Ingredient i in food.ingredients) {
+        for (Macronutrients mac in i.macronutrient) {
+          if (total[mac.name] == null) {
+            total[mac.name] = mac.value * mac.adjustFraction;
+          } else {
+            total[mac.name] += mac.value * mac.adjustFraction;
+          }
+        }
+      }
+    }
+    return total;
+  }
 }
 
 class DailyMeals {
   List<Meal> mealList = <Meal>[];
+  String date = "";
+  var total = {};
+
+  String displayDate() {
+    return date.substring(5, 10);
+  }
+
+  double getTotal(type) {
+    if (type == "Calories") {
+      return total["Calories"] != null ? total["Calories"] * 100 : 0;
+    }
+    if (type == "Fat") {
+      return total["Fat"] != null ? total["Fat"] / 10000 : 0;
+    }
+    if (type == "Proteins") {
+      return total["Proteins"] != null ? total["Proteins"] / 10000 : 0;
+    }
+    if (type == "Carbohydrates") {
+      return total["Carbohydrates"] != null ? total["Carbohydrates"] / 10000 : 0;
+    }
+    return 0;
+  }
+
+  void getTotalMacroNutrientsValue() {
+    var total = {};
+    for(Meal meal in mealList) {
+      date = meal.date;
+      var mealTotal = meal.getTotalMacroNutrients();
+      mealTotal.forEach((key, value) {
+        if (total[key] == null) {
+          total[key] = value;
+        } else {
+          total[key] += value;
+        }
+      });
+    }
+    this.total = total;
+  }
 
   List<Macronutrients> getTotalMacronutrients() {
     List<Macronutrients> totalMacronutrients = List<Macronutrients>.generate(4, (index) {

@@ -25,7 +25,6 @@ class _ViewFoodPage extends State<ViewFoodPage> {
   void _clickCommand() {
     if (currentUser?.role == "Normal") {
       if (widget.foodList != null) {
-        print(1111);
         if (widget.command == "Add") {
           widget.foodList?.add(widget.food);
         } else {
@@ -76,6 +75,9 @@ class _ViewFoodPage extends State<ViewFoodPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: 20,
+            ),
             Center(
                 child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
@@ -90,82 +92,94 @@ class _ViewFoodPage extends State<ViewFoodPage> {
                             )
                           : null,
                     ))),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 30, 0, 0),
+              child: const Text('Descriptions',
+                  style: TextStyle(
+                    color: Color(APP_COLORS.GREEN),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
-            const Text('Descriptions',
-                style: TextStyle(
-                  color: Color(APP_COLORS.GREEN),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                )),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 30, 0, 0),
+              child: Text(widget.food.description,
+                  style: const TextStyle(
+                    color: Color(APP_COLORS.GRAY),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
-            Text(widget.food.description,
-                style: const TextStyle(
-                  color: Color(APP_COLORS.GRAY),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                )),
-              SizedBox(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
             MacroNutrientsGroup(list: widget.food.getTotalMacronutrients()),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            MacronutrientsPieChart(macronutrients: widget.food.getTotalMacronutrients()),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 30, 0, 0),
+              child: MacronutrientsPieChart(macronutrients: widget.food.getTotalMacronutrients()),
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            const Text('Ingredients',
-                style: TextStyle(
-                  color: Color(APP_COLORS.GREEN),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                )),
-            Visibility(
-              visible: widget.food.ingredients.isNotEmpty,
-              child: Table(
-                columnWidths: {
-                  0: FlexColumnWidth(MediaQuery.of(context).size.width * 0.10),
-                },
-                children: [
-                  ...widget.food.ingredients.map((e) => TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                0,
-                                MediaQuery.of(context).size.height * 0.03,
-                                0,
-                                0,
-                              ),
-                              child: Text(
-                                e.getBeautifyServing(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: Color(APP_COLORS.GRAY),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 30, 0, 0),
+              child: const Text('Ingredients',
+                  style: TextStyle(
+                    color: Color(APP_COLORS.GREEN),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
+              child: Visibility(
+                visible: widget.food.ingredients.isNotEmpty,
+                child: Table(
+                  columnWidths: {
+                    0: FlexColumnWidth(MediaQuery.of(context).size.width * 0.10),
+                  },
+                  children: [
+                    ...widget.food.ingredients.map((e) => TableRow(
+                          children: [
+                            TableCell(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                  0,
+                                  MediaQuery.of(context).size.height * 0.03,
+                                  0,
+                                  0,
+                                ),
+                                child: Text(
+                                  e.getBeautifyServing(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Color(APP_COLORS.GRAY),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )),
-                ],
+                          ],
+                        )),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            const Text('Nutrients',
-                style: TextStyle(
-                  color: Color(APP_COLORS.GREEN),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                )),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 10, 0, 0),
+              child: const Text('Nutrients',
+                  style: TextStyle(
+                    color: Color(APP_COLORS.GREEN),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),

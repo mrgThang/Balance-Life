@@ -1,38 +1,41 @@
-import 'package:app/screens/sign_up_page.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 
-import '../models/user_model.dart';
-import 'control_page.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title, required this.camera});
-
-  final String title;
-  final CameraDescription camera;
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  State<SignUpPage> createState() => _SignUpPage();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _SignUpPage extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(
-            fontSize: 30,
+        title: const Text(
+          "Sign Up",
+          style: TextStyle(
+            fontSize: 25,
             fontWeight: FontWeight.w500,
             color: Color(0xff77ea7e),
           )
         ),
         centerTitle: true,
         backgroundColor: const Color(0xffe4fbe5),
+        leading: IconButton(
+          icon: const Icon(IconlyLight.arrow_left_2),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -102,7 +105,7 @@ class _LoginPage extends State<LoginPage> {
                       child: TextFormField(
                         controller: emailController,
                         decoration: const InputDecoration(
-                            border: OutlineInputBorder(), labelText: "Email"),
+                          border: OutlineInputBorder(), labelText: "Email"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
@@ -118,7 +121,7 @@ class _LoginPage extends State<LoginPage> {
                         controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
-                            border: OutlineInputBorder(), labelText: "Password"),
+                          border: OutlineInputBorder(), labelText: "Password"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
@@ -128,19 +131,19 @@ class _LoginPage extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          SizedBox(width: 1),
-                          Text(
-                            "Forgot password?",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xffa2ec8e),
-                            ),
-                          ),
-                        ],
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        controller: confirmPasswordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: "Confirm Password"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                     Padding(
@@ -150,25 +153,7 @@ class _LoginPage extends State<LoginPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              var body = {
-                                "email": emailController.text.toString(),
-                                "password": passwordController.text.toString()
-                              };
-                              try {
-                                login(body: body).then((value) {
-                                  getUserList().then((value) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ControlPage(camera: widget.camera)),
-                                    );
-                                  });
-                                });
-                              } catch (e) {
-                                // No specified type, handles all
-                                print('Something really unknown: $e');
-                              }
+
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Please fill input')),
@@ -183,7 +168,7 @@ class _LoginPage extends State<LoginPage> {
                             ),
                           ),
                           child: const Text(
-                            "Login",
+                            "Sign Up",
                             style: TextStyle(
                               fontSize: 20,
                             )
@@ -195,67 +180,9 @@ class _LoginPage extends State<LoginPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Don't have an account? ",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xffa2ec8e),
-                  ),
-                ),
-                GestureDetector(
-                  child: const Text(
-                    "SIGN UP",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff77ea7e),
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SignUpPage()
-                      )
-                    );
-                  },
-                )
-              ],
-            ),
           ],
         ),
-      )
+      ),
     );
-  }
-}
-
-class CustomRect1 extends CustomClipper<Rect>{
-  @override
-  Rect getClip(Size size) {
-    Rect rect = Rect.fromLTRB(-size.width, -size.height, size.width, size.height);
-    return rect;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return true;
-  }
-}
-
-class CustomRect2 extends CustomClipper<Rect>{
-  @override
-  Rect getClip(Size size) {
-    Rect rect = Rect.fromLTRB(size.width*2, -size.height, 0, size.height);
-    return rect;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return true;
   }
 }

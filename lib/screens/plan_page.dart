@@ -1,6 +1,7 @@
 import 'package:app/screens/view_food_page.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+import 'package:intl/intl.dart';
 
 import '../models/food.dart';
 import '../models/meal.dart';
@@ -12,24 +13,98 @@ import '../widgets/food_card.dart';
 
 class PlanPage extends StatefulWidget {
   final String? label;
-  const PlanPage({super.key, this.label});
+  const PlanPage({super.key, this.restorationId, this.label});
+
+  final String? restorationId;
+
 
   @override
   State<PlanPage> createState() => _PlanPage();
 }
 
-class _PlanPage extends State<PlanPage> {
+class _PlanPage extends State<PlanPage> with RestorationMixin {
+  @override
+  String? get restorationId => widget.restorationId;
+
   TextEditingController nameController = TextEditingController();
   List<dynamic> searchList = [];
   List<String> chosenList = [];
   List<dynamic> foodList = [];
   Meal _meal = Meal();
+  List<String> list = <String>['Breakfast', 'Lunch', 'Dinner'];
+  String dropdownValue = 'Breakfast';
+
+  final RestorableDateTime _selectedDate =
+  RestorableDateTime(DateTime.now());
+  late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
+  RestorableRouteFuture<DateTime?>(
+    onComplete: _selectDate,
+    onPresent: (NavigatorState navigator, Object? arguments) {
+      return navigator.restorablePush(
+        _datePickerRoute,
+        arguments: _selectedDate.value.millisecondsSinceEpoch,
+      );
+    },
+  );
+
+  @pragma('vm:entry-point')
+  static Route<DateTime> _datePickerRoute(
+      BuildContext context,
+      Object? arguments,
+      ) {
+    return DialogRoute<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return DatePickerDialog(
+          restorationId: 'date_picker_dialog',
+          initialEntryMode: DatePickerEntryMode.calendarOnly,
+          initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
+          firstDate: DateTime(2022),
+          lastDate: DateTime(2024),
+        );
+      },
+    );
+  }
+
+  Future<void> _selectDate(DateTime? newSelectedDate) async {
+    if (newSelectedDate != null) {
+      currentDate = newSelectedDate;
+      if(currentUser?.role == "Specialist") {
+        await getMealsDataOfUser();
+      }
+      setState(() {
+        _selectedDate.value = newSelectedDate;
+      });
+    }
+  }
+
+  String getDisplayOfDate() {
+    if (DateFormat.yMd().format(currentDate).toString()
+        == DateFormat.yMd().format(DateTime.now()).toString()) {
+      return "Today";
+    }
+    return DateFormat.yMd().format(currentDate).toString();
+  }
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_selectedDate, 'selected_date');
+    registerForRestoration(
+        _restorableDatePickerRouteFuture, 'date_picker_route_future');
+  }
 
   Future<void> getMealsDataOfUser() async {
-    var dailyMealsData = await getMealsByDate(userId: currentUser?.id ?? 0, date: DateTime.now(), showDetails: true, showTotals: true);
-    DailyMeals customerDailyMeals = createDailyMealsObjectFromJson(dailyMealsData);
+    var dailyMealsData = await getMealsByDate(userId: currentUser?.id ?? 0, date: currentDate, showDetails: true, showTotals: true);
+    List<DailyMeals> listDailyMeals = createDailyMealsObjectFromJson(dailyMealsData);
+    DailyMeals customerDailyMeals = DailyMeals();
+    for (DailyMeals dailyMeals in listDailyMeals) {
+      if(dailyMeals.mealList.isNotEmpty) {
+        customerDailyMeals = dailyMeals;
+      }
+    }
+    _meal = Meal();
     for(Meal meal in customerDailyMeals.mealList) {
-      if(meal.time == (widget.label ?? "Breakfast")) {
+      if(meal.time == (dropdownValue ?? 'Breakfast')) {
         _meal = meal;
       }
     }
@@ -39,7 +114,7 @@ class _PlanPage extends State<PlanPage> {
   }
 
   void setAllState() {
-    setState((){print(11111);});
+    setState((){});
   }
 
   Future<void> getAllFoodsForSearching() async {
@@ -56,6 +131,7 @@ class _PlanPage extends State<PlanPage> {
       getMealsDataOfUser();
       getAllFoodsForSearching();
     }
+    dropdownValue = (widget.label ?? 'Breakfast')!;
   }
 
   @override
@@ -65,15 +141,76 @@ class _PlanPage extends State<PlanPage> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            const SizedBox(height: 10),
-            Center(
-              child: Text(
-                widget.label ?? "Breakfast",
+            Visibility(
+              visible: currentUser?.role == "Normal",
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_outlined, size: 27, color: Color(0xff9b9b9b)),
+                      onPressed: () async {
+                        currentDate = currentDate.subtract(Duration(days: 1));
+                        await getMealsDataOfUser();
+                        setState(() {
+
+                        });
+                      },
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                            icon: const Icon(IconlyLight.calendar,size: 30, color: Color(0xff9b9b9b)),
+                            onPressed: () {
+                              _restorableDatePickerRouteFuture.present();
+                            }
+                        ),
+                        Text(
+                          getDisplayOfDate(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff9b9b9b),
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward_ios_outlined, size: 27, color: Color(0xff9b9b9b)),
+                      onPressed: () async {
+                        currentDate = currentDate.add(Duration(days: 1));
+                        await getMealsDataOfUser();
+                        setState(() {
+
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Visibility(
+              visible: currentUser?.role == "Normal",
+              child: DropdownButton<String>(
+                value: dropdownValue,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
                 style: const TextStyle(
-                  color: Color(0xff91c788),
-                  fontSize: 25,
+                  color: Color(APP_COLORS.GREEN),
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
+                onChanged: (String? value) async {
+                  dropdownValue = value!;
+                  await getMealsDataOfUser();
+                },
+                items: list.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
             ),
             const SizedBox(height: 20),

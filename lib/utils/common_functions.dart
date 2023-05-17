@@ -59,19 +59,29 @@ String processMessageTime(String timestamp) {
   return "$ret $time";
 }
 
-DailyMeals createDailyMealsObjectFromJson(data) {
+List<DailyMeals> createDailyMealsObjectFromJson(data) {
+  List<DailyMeals> results = [];
   DailyMeals dailyMeals = DailyMeals();
+  String date = "";
   for (var mealData in data["meals"]) {
     Meal currentMeal = createMealObjectFromJson(mealData);
+    if (currentMeal.date != date) {
+      results.add(dailyMeals);
+      dailyMeals = DailyMeals();
+      date = currentMeal.date;
+    }
     dailyMeals.mealList.add(currentMeal);
+    dailyMeals.date = currentMeal.date;
   }
-  return dailyMeals;
+  results.add(dailyMeals);
+  return results;
 }
 
 Meal createMealObjectFromJson(data) {
   Meal meal = Meal();
   meal.mealId = data["id"];
   meal.time = data["time"];
+  meal.date = data["date"];
   meal.userId = data["user_id"];
   for (var foodData in data["food_set"]) {
     Food currentFood = createFoodObjectFromJson(foodData);
@@ -81,7 +91,6 @@ Meal createMealObjectFromJson(data) {
 }
 
 Food createFoodObjectFromJson(data) {
-  print(data);
   Food food = Food();
   food.name = data["food_name"];
   // food.description = data["description"];
@@ -114,7 +123,7 @@ Ingredient createIngredientObjectFromJson(data) {
   for (int i = 0; i < 4; ++i) {
     macronutrient.add(Macronutrients(
       macronutrientName[i],
-      data[macronutrientName[i].toString().toLowerCase()],
+      data[macronutrientName[i].toString().toLowerCase()] / adjustFraction,
       macronutrientTail[i],
       adjustFraction,
     ));
@@ -124,7 +133,7 @@ Ingredient createIngredientObjectFromJson(data) {
     vitamins.add(nutrientData[VITAMIN_NAMES[i]] != null
         ? Nutrients(
       VITAMIN_NAMES[i],
-      nutrientData[VITAMIN_NAMES[i]]["amount"],
+      nutrientData[VITAMIN_NAMES[i]]["amount"] / adjustFraction,
       nutrientData[VITAMIN_NAMES[i]]["rda"],
       adjustFraction,
     )
@@ -140,7 +149,7 @@ Ingredient createIngredientObjectFromJson(data) {
     minerals.add(nutrientData[MINERAL_NAMES[i]] != null
         ? Nutrients(
       MINERAL_NAMES[i],
-      nutrientData[MINERAL_NAMES[i]]["amount"],
+      nutrientData[MINERAL_NAMES[i]]["amount"] / adjustFraction,
       nutrientData[MINERAL_NAMES[i]]["rda"],
       adjustFraction,
     )
@@ -156,7 +165,7 @@ Ingredient createIngredientObjectFromJson(data) {
     aminioAcids.add(nutrientData[AMINO_ACIDS_NAMES[i]] != null
         ? Nutrients(
       AMINO_ACIDS_NAMES[i],
-      nutrientData[AMINO_ACIDS_NAMES[i]]["amount"],
+      nutrientData[AMINO_ACIDS_NAMES[i]]["amount"] / adjustFraction,
       nutrientData[AMINO_ACIDS_NAMES[i]]["rda"],
       adjustFraction,
     )
@@ -172,7 +181,7 @@ Ingredient createIngredientObjectFromJson(data) {
     fattyAcids.add(nutrientData[FATTY_ACIDS_NAMES[i]] != null
         ? Nutrients(
       FATTY_ACIDS_NAMES[i],
-      nutrientData[FATTY_ACIDS_NAMES[i]]["amount"],
+      nutrientData[FATTY_ACIDS_NAMES[i]]["amount"] / adjustFraction,
       nutrientData[FATTY_ACIDS_NAMES[i]]["rda"],
       adjustFraction,
     )

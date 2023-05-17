@@ -36,8 +36,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           // primarySwatch: MaterialColor(APP_COLORS.GRAY, color),
-          // fontFamily: 'Signika',
-          primarySwatch: Colors.blue,
+          fontFamily: 'Signika',
+          primarySwatch: Colors.green,
           appBarTheme: const AppBarTheme(
             elevation: 0.0,
             backgroundColor: Colors.white10,

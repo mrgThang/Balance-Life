@@ -2,33 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../utils/constants.dart';
 
-class Macronutrients extends StatelessWidget{
+class Statistics extends StatelessWidget{
   String name = "";
   double value = 0.0;
   String tail = "";
-  double adjustFraction = 0.0;
-  String renderString = "";
 
-  Macronutrients(String name, double value, String tail, double adjustFaction) {
+
+  Statistics(String name, double value, String tail) {
     this.name = name;
     this.value = value;
     this.tail = tail;
-    setAdjustFraction(adjustFaction);
-  }
-
-  void setAdjustFraction(double adjustFraction) {
-    this.adjustFraction = adjustFraction;
-    if (this.tail == "cal") {
-      double new_value = this.value * 100 * adjustFraction;
-      this.renderString = "${new_value.toStringAsFixed(0)}${this.tail}";
-    } else {
-      double new_value = this.value / 10 * adjustFraction;
-      if (new_value >= 1000) {
-        new_value = new_value / 1000;
-        this.renderString = "${new_value.toStringAsFixed(0)}${this.tail}";
-      }
-      this.renderString = "${new_value.toStringAsFixed(0)}m${this.tail}";
-    }
   }
 
   @override
@@ -46,7 +29,7 @@ class Macronutrients extends StatelessWidget{
           height: MediaQuery.of(context).size.height * 0.01,
         ),
         Text(
-          this.renderString,
+          "${this.value.toStringAsFixed(0)} ${this.tail}",
           style: TextStyle(
             color: Color(APP_COLORS.PINK),
             fontSize: 20,
@@ -57,8 +40,8 @@ class Macronutrients extends StatelessWidget{
   }
 }
 
-class MacroNutrientsGroup extends StatelessWidget {
-  const MacroNutrientsGroup({super.key, required this.list});
+class StatisticsGroup extends StatelessWidget {
+  const StatisticsGroup({super.key, required this.list});
 
   final List list;
 
