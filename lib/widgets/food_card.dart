@@ -1,26 +1,30 @@
+import 'package:app/models/meal.dart';
 import 'package:app/screens/view_food_page.dart';
 import 'package:flutter/material.dart';
 
 import '../models/food.dart';
+import '../services/api_service.dart';
 
 class FoodCard extends StatelessWidget {
   final Food food;
-  const FoodCard({
+  final Meal? meal;
+  final Function callback;
+  FoodCard({
     Key? key,
-    required this.food
+    required this.food, this.meal, required this.callback
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        await Navigator.push(
           context,
           PageRouteBuilder(
-            pageBuilder: (_, __, ___) => ViewFoodPage(food: food,),
+            pageBuilder: (_, __, ___) => ViewFoodPage(food: food, command: "Remove", foodList: meal?.foodList),
             transitionDuration: const Duration(milliseconds: 500),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, -1.0);
+              const begin = Offset(1.0, 0.0);
               const end = Offset.zero;
               const curve = Curves.ease;
 
@@ -33,6 +37,8 @@ class FoodCard extends StatelessWidget {
             },
           ),
         );
+        await updateMeals(meal: meal);
+        callback();
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),

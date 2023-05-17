@@ -264,8 +264,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                       customer = null;
                                     }
                                     setState(() {
-                                      print(specialist);
-                                      print(customer);
                                       widget.callback();
                                     });
                                   });
@@ -313,8 +311,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                           currentUser!.customer_id = user.id;
                                         }
                                         setState(() {
-                                          print(specialist);
-                                          print(customer);
                                           widget.callback();
                                         });
                                       },

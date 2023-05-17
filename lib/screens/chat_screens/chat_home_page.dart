@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:app/screens/validate_food_page.dart';
+import 'package:app/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/models/message_model.dart';
@@ -29,6 +31,8 @@ class _ChatHomePageState extends State<ChatHomePage> {
   int _currentIndex = 1;
 
   List<ChatRoom> chatRooms = [];
+  List foodList = [];
+
 
   Future<int> connectWebSocket() async {
     var roomName = currentUser!.id.toString();
@@ -42,9 +46,20 @@ class _ChatHomePageState extends State<ChatHomePage> {
     return 0;
   }
 
+  Future<void> getAllFoodsData() async {
+    var foodData = await getAllFoods();
+    for (var data in foodData) {
+      foodList.add(createFoodObjectFromJson(data));
+      print(foodList[0].imageUrl);
+    }
+    setState(() {
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
 
     connectWebSocket().then((value) {
       channel.sink.add(jsonEncode({
@@ -79,7 +94,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
     });
 
     _children = [
-      ChooseUserPage(),
+      currentUser?.role == "Normal" ? ChooseUserPage() : ValidateFoodPage(foodList: foodList,),
       ChatRoomPage(context: context, chatRooms: chatRooms),
     ];
     _currentIcon = [
@@ -91,16 +106,18 @@ class _ChatHomePageState extends State<ChatHomePage> {
           ? ""
           : currentUser?.role == "Normal"
               ? "Experts"
-              : "Customers",
+              : "Validate Food",
       "Chats",
     ];
+
+    getAllFoodsData();
   }
 
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     _children = [
-      ChooseUserPage(),
+      currentUser?.role == "Normal" ? ChooseUserPage() : ValidateFoodPage(foodList: foodList,),
       ChatRoomPage(context: context, chatRooms: chatRooms),
     ];
     return Scaffold(

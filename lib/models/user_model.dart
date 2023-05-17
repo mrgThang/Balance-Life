@@ -34,6 +34,7 @@ User? customer;
 User? specialist;
 List<User> userList = [];
 Map<int, User> user_by_id = {};
+DateTime currentDate = DateTime.now();
 
 User json_to_user(json) {
   var noavatarpicture = 'http://${url}images/profile_image/noavatar.png';

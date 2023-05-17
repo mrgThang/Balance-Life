@@ -36,24 +36,24 @@ class _ControlPage extends State<ControlPage> {
     const Icon(IconlyLight.home),
     const Icon(IconlyLight.calendar),
     const Icon(IconlyLight.camera),
-    const Icon(IconlyLight.chat),
-    const Icon(IconlyLight.profile),
+    const Icon(IconlyLight.user_1),
+    const Icon(IconlyLight.setting),
   ];
 
   final List<Icon> _boldIcon = [
     const Icon(IconlyBold.home),
     const Icon(IconlyBold.calendar),
     const Icon(IconlyBold.camera),
-    const Icon(IconlyBold.chat),
-    const Icon(IconlyBold.profile),
+    const Icon(IconlyBold.user_2),
+    const Icon(IconlyBold.setting),
   ];
 
   final List<Icon> _currentIcon = [
     const Icon(IconlyBold.home),
     const Icon(IconlyLight.calendar),
     const Icon(IconlyLight.camera),
-    const Icon(IconlyLight.chat),
-    const Icon(IconlyLight.profile),
+    const Icon(IconlyLight.user_1),
+    const Icon(IconlyLight.setting),
   ];
 
   void onTabTapped(int index) {
@@ -97,7 +97,7 @@ class _ControlPage extends State<ControlPage> {
       fontFamily: "SF Pro Text",
     );
     _children = [
-      HomePage(camera: widget.camera),
+      HomePage(camera: widget.camera, restorationId: 'ControlPage',),
       PlanPage(label: widget.plan),
       CameraPage(camera: widget.camera),
       ChatHomePage(),
