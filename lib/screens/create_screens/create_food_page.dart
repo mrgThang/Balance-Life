@@ -11,6 +11,7 @@ import 'package:app/utils/constants.dart';
 import '../../models/food.dart';
 import '../../models/user_model.dart';
 import '../../services/api_service.dart';
+import '../../widgets/chart.dart';
 
 class CreateFoodPage extends StatefulWidget {
   const CreateFoodPage({super.key, required this.imagePath});
@@ -235,6 +236,11 @@ class _CreateFoodPage extends State<CreateFoodPage> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.05,
                         ),
+                        Visibility(
+                          visible: _food.ingredients.length > 0,
+                          child: MacronutrientsPieChart(macronutrients: _food.getTotalMacronutrients()),
+                        ),
+                        SizedBox(height: 50,),
                         const Text('Ingredients',
                             style: TextStyle(
                               color: Color(APP_COLORS.GREEN),
@@ -275,6 +281,7 @@ class _CreateFoodPage extends State<CreateFoodPage> {
                             ],
                           ),
                         ),
+
                       ],
                     )),
               )),

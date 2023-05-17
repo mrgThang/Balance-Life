@@ -68,9 +68,7 @@ class _HomePage extends State<HomePage> with RestorationMixin {
   Future<void> _selectDate(DateTime? newSelectedDate) async {
     if (newSelectedDate != null) {
       currentDate = newSelectedDate;
-      if(currentUser?.role == "Specialist") {
-        await getMealsData();
-      }
+      await getMealsData();
       setState(() {
         _selectedDate.value = newSelectedDate;
       });
